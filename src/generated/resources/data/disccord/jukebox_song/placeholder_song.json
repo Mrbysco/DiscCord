@@ -1,0 +1,8 @@
+{
+  "comparator_output": 0,
+  "description": {
+    "translate": "jukebox_song.disccord.placeholder_song"
+  },
+  "length_in_seconds": 1.0,
+  "sound_event": "disccord:placeholder_sound"
+}

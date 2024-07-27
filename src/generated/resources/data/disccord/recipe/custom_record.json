@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "tag": "c:music_discs"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PEP",
+    "RDR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "disccord:custom_record"
+  }
+}

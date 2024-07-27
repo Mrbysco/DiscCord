@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "compatibilityLevel": "JAVA_21",
+  "package": "com.mrbysco.disccord.mixin",
+  "target": "@env(DEFAULT)",
+  "mixins": [
+    "JukeboxBlockEntityMixin"
+  ],
+  "client": [
+    "client.SoundBufferLibraryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
