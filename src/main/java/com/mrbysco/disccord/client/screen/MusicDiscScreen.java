@@ -1,18 +1,20 @@
 package com.mrbysco.disccord.client.screen;
 
 import com.mrbysco.disccord.DiscCordMod;
-import com.mrbysco.disccord.network.payload.SetRecordUrlPayload;
+import com.mrbysco.disccord.network.PacketHandler;
+import com.mrbysco.disccord.network.payload.SetRecordUrlMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 public class MusicDiscScreen extends Screen {
 	private static final ResourceLocation TEXTURE = DiscCordMod.modLoc("textures/gui/record_input.png");
-	private static final ResourceLocation TEXT_FIELD_TEXTURE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
+	private static final ResourceLocation TEXT_FIELD_TEXTURE = new ResourceLocation("minecraft", "container/anvil/text_field");
 	private EditBox nameField;
 
 	private final int backgroundWidth = 176;
@@ -22,6 +24,10 @@ public class MusicDiscScreen extends Screen {
 	public MusicDiscScreen(Component title, String inputDefaultText) {
 		super(title);
 		this.inputDefaultText = inputDefaultText;
+	}
+
+	public static void openScreen(Component title, String inputDefaultText) {
+		Minecraft.getInstance().setScreen(new MusicDiscScreen(title, inputDefaultText));
 	}
 
 	public void updateTextPosition() {
@@ -58,7 +64,7 @@ public class MusicDiscScreen extends Screen {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
 			if (!this.nameField.getValue().equals(this.inputDefaultText)) {
-				this.minecraft.getConnection().send(new SetRecordUrlPayload(this.nameField.getValue()));
+				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetRecordUrlMessage(this.nameField.getValue()));
 			}
 
 			this.minecraft.player.closeContainer();
@@ -77,7 +83,7 @@ public class MusicDiscScreen extends Screen {
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
 		graphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-		graphics.blitSprite(TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
+		graphics.blit(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 0, 110, 16);
 
 		if (this.nameField == null) {
 			updateTextPosition();

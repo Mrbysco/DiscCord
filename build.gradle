@@ -1,9 +1,10 @@
 plugins {
-    id 'java-library'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.154'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin'
     id 'net.darkhax.curseforgegradle' version '1.1.24'
     id 'com.modrinth.minotaur' version "2.+"
 }
@@ -14,52 +15,99 @@ base {
     archivesName = "${mod_archive_name}-${mc_version}"
 }
 
-// Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
 
-runs {
-    // applies to all the run configs below
-    configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
-        // Recommended logging data for a userdev environment
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
+    copyIdeResources = true
 
-        // Recommended logging level for the console
-        systemProperty 'forge.logging.console.level', 'debug'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-        //Limit ram usage for the dev environment to 4GB
-        jvmArgument '-Xmx4G'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
-        if (run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
-            run.jvmArgument("-XX:+AllowEnhancedClassRedefinition")
+            // Recommended logging data for a userdev environment
+            // property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
+
+            jvmArgs("-Xmx4G")
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
         }
 
-        modSource project.sourceSets.main
-    }
+        server {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
-    client {
-        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', "${mod_id}"
-    }
+            // Recommended logging data for a userdev environment
+            // property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
-    server {
-        systemProperty 'forge.enabledGameTestNamespaces', "${mod_id}"
-        programArgument '--nogui'
-    }
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
 
-    data {
-        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-        // workingDirectory project.file('run-data')
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
 
-        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            jvmArgs "-Xmx4G"
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
+            // Recommended logging data for a userdev environment
+            // property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            jvmArgs "-Xmx4G"
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
     }
 }
 
 // Include resources generated by data generators.
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
 
 repositories {
     maven {
@@ -68,14 +116,13 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neo_version}"
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
 
-    runtimeOnly "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
-
-//    compileOnly("com.blamejared.crafttweaker:CraftTweaker-neoforge-${mc_version}:${crafttweaker_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 }
 
 jar {
@@ -92,13 +139,21 @@ jar {
     }
 }
 
+jar.finalizedBy('reobfJar')
+
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+    type 'jar'
+    builtBy 'reobfJar'
+}
 publishing {
     publications {
-        register('mavenJava', MavenPublication) {
-            groupId project.group
-            artifactId base.archivesName.get()
-            version project.version
-            from components.java
+        mavenJava(MavenPublication) {
+            artifact(reobfArtifact) {
+                builtBy reobfArtifact
+                artifactId = base.archivesName.get()
+                classifier null
+            }
         }
     }
     repositories {
@@ -120,9 +175,9 @@ if (System.getenv().CURSEFORGE_KEY) {
 
         def mainFile = upload(project.curseforge_id, jar)
         mainFile.releaseType = 'beta'
-        mainFile.addModLoader("NeoForge")
+        mainFile.addModLoader("Forge", "NeoForge")
         mainFile.addGameVersion("${mc_version}")
-        mainFile.addJavaVersion("Java 21")
+        mainFile.addJavaVersion("Java 17")
         mainFile.addGameVersion('Server', 'Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
@@ -143,7 +198,7 @@ if (System.getenv().MODRINTH_KEY) {
         uploadFile = jar
         changelog = file("$project.rootDir/changelog.md").text
         gameVersions = ["${mc_version}"]
-        loaders = ["neoforge"]
+        loaders = ["forge", "neoforge"]
 
         dependencies {
 
@@ -151,10 +206,26 @@ if (System.getenv().MODRINTH_KEY) {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+////////////////
+// IntelliJ Project Import
+// The Mixin annotation process does not have an obfuscation source when running through the IntelliJ compiler,
+// thus we have to prevent it from being activated as part of importing this Gradle project into IntelliJ.
+if (System.getProperty("idea.sync.active") == "true") {
+    afterEvaluate {
+        tasks.withType(JavaCompile).all {
+            it.options.annotationProcessorPath = files()
+        }
     }
 }

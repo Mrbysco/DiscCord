@@ -1,21 +1,26 @@
 package com.mrbysco.disccord.network;
 
 import com.mrbysco.disccord.DiscCordMod;
-import com.mrbysco.disccord.network.handler.ClientPayloadHandler;
-import com.mrbysco.disccord.network.handler.ServerPayloadHandler;
-import com.mrbysco.disccord.network.payload.OpenMusicDiscScreenPayload;
-import com.mrbysco.disccord.network.payload.PlayRecordPayload;
-import com.mrbysco.disccord.network.payload.SetRecordUrlPayload;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import com.mrbysco.disccord.network.payload.OpenMusicDiscScreenMessage;
+import com.mrbysco.disccord.network.payload.PlayRecordMessage;
+import com.mrbysco.disccord.network.payload.SetRecordUrlMessage;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler {
+	private static final String PROTOCOL_VERSION = "1";
+	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(DiscCordMod.MOD_ID, "main"),
+			() -> PROTOCOL_VERSION,
+			PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals
+	);
+	private static int id = 0;
 
-	public static void setupPackets(final RegisterPayloadHandlersEvent event) {
-		final PayloadRegistrar registrar = event.registrar(DiscCordMod.MOD_ID);
-
-		registrar.playToClient(OpenMusicDiscScreenPayload.ID, OpenMusicDiscScreenPayload.CODEC, ClientPayloadHandler.getInstance()::handleDiscScreen);
-		registrar.playToClient(PlayRecordPayload.ID, PlayRecordPayload.CODEC, ClientPayloadHandler.getInstance()::handleRecordPlay);
-		registrar.playToServer(SetRecordUrlPayload.ID, SetRecordUrlPayload.CODEC, ServerPayloadHandler.getInstance()::handleRecordUrl);
+	public static void init() {
+		CHANNEL.registerMessage(id++, OpenMusicDiscScreenMessage.class, OpenMusicDiscScreenMessage::encode, OpenMusicDiscScreenMessage::decode, OpenMusicDiscScreenMessage::handle);
+		CHANNEL.registerMessage(id++, PlayRecordMessage.class, PlayRecordMessage::encode, PlayRecordMessage::decode, PlayRecordMessage::handle);
+		CHANNEL.registerMessage(id++, SetRecordUrlMessage.class, SetRecordUrlMessage::encode, SetRecordUrlMessage::decode, SetRecordUrlMessage::handle);
 	}
 }

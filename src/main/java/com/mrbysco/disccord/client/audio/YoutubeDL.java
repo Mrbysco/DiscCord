@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -25,6 +25,7 @@ public class YoutubeDL {
 
 	/**
 	 * Checks if the 'yt-dlp' executable is in the path, if not it will download it if the user has enabled the option
+	 *
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
@@ -86,6 +87,7 @@ public class YoutubeDL {
 
 	/**
 	 * Checks if the 'yt-dlp' executable is in the path
+	 *
 	 * @param fileName The name of the 'yt-dlp' executable
 	 * @return Whether the 'yt-dlp' executable is present
 	 */
@@ -111,8 +113,9 @@ public class YoutubeDL {
 
 	/**
 	 * Executes a command using the 'yt-dlp' executable
+	 *
 	 * @param arguments The arguments to pass to the 'yt-dlp' executable
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static void executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {

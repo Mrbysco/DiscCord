@@ -5,7 +5,7 @@ import com.mrbysco.disccord.config.DiscCordConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -27,6 +27,7 @@ public class FFmpeg {
 
 	/**
 	 * Checks if the 'ffmpeg' executable is in the path, if not it will download it if the user has enabled the option
+	 *
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
@@ -107,6 +108,7 @@ public class FFmpeg {
 
 	/**
 	 * Checks if the 'ffmpeg' executable is in the path
+	 *
 	 * @return Whether the 'ffmpeg' executable is present
 	 */
 	static boolean checkFFMpegPath() {
@@ -131,8 +133,9 @@ public class FFmpeg {
 
 	/**
 	 * Executes a command using the 'ffmpeg' executable
+	 *
 	 * @param arguments The arguments to pass to the 'ffmpeg' executable
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static void executeFFmpegCommand(String arguments) throws IOException, InterruptedException {

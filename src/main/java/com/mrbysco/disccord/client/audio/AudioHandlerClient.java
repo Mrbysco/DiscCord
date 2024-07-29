@@ -2,7 +2,7 @@ package com.mrbysco.disccord.client.audio;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.util.Hashing;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class AudioHandlerClient {
 	/**
 	 * Check for the audio file related to the given URL
+	 *
 	 * @param urlName The URL to check for
 	 * @return Whether the audio file exists
 	 */
@@ -28,6 +29,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Download the audio file from the given URL and convert it to OGG format
+	 *
 	 * @param urlName The URL to download the audio from
 	 * @return A CompletableFuture that will be completed when the download is finished
 	 */
@@ -57,6 +59,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get an InputStream for the audio file related to the given URL
+	 *
 	 * @param urlName The URL to get the audio file for
 	 * @return An InputStream for the audio file
 	 */
@@ -78,6 +81,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get the minecraftified version of the URL (Replacing all resource location invalid characters with underscores)
+	 *
 	 * @param url The URL to minecraftify
 	 * @return The minecraftified URL
 	 */

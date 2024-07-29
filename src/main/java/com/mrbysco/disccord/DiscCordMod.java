@@ -3,40 +3,44 @@ package com.mrbysco.disccord;
 import com.mojang.logging.LogUtils;
 import com.mrbysco.disccord.config.DiscCordConfig;
 import com.mrbysco.disccord.network.PacketHandler;
-import com.mrbysco.disccord.registry.ModDataComponents;
 import com.mrbysco.disccord.registry.ModRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 @Mod(DiscCordMod.MOD_ID)
 public class DiscCordMod {
 	public static final String MOD_ID = "disccord";
 	public static final Logger LOGGER = LogUtils.getLogger();
+	public static final String URL_NBT = "disccord:url";
 
-	public DiscCordMod(IEventBus eventBus, Dist dist, ModContainer container) {
-		container.registerConfig(ModConfig.Type.SERVER, DiscCordConfig.serverSpec);
+	public DiscCordMod() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, DiscCordConfig.serverSpec);
 		eventBus.register(DiscCordConfig.class);
 
-		ModDataComponents.DATA_COMPONENT_TYPES.register(eventBus);
 		ModRegistry.ITEMS.register(eventBus);
 		ModRegistry.SOUND_EVENTS.register(eventBus);
 
 		eventBus.addListener(this::addTabContents);
-		eventBus.addListener(PacketHandler::setupPackets);
+		eventBus.addListener(this::setup);
 
-		if (dist.isClient()) {
-			container.registerConfig(ModConfig.Type.CLIENT, DiscCordConfig.clientSpec);
-			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-		}
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, DiscCordConfig.clientSpec);
+		});
+	}
+
+	private void setup(final FMLCommonSetupEvent event) {
+		PacketHandler.init();
 	}
 
 	private void addTabContents(final BuildCreativeModeTabContentsEvent event) {
@@ -46,6 +50,6 @@ public class DiscCordMod {
 	}
 
 	public static ResourceLocation modLoc(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+		return new ResourceLocation(MOD_ID, path);
 	}
 }

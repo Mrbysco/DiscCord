@@ -1,8 +1,8 @@
 package com.mrbysco.disccord.client.audio;
 
+import com.mojang.blaze3d.audio.OggAudioStream;
 import net.minecraft.Util;
 import net.minecraft.client.sounds.AudioStream;
-import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.client.sounds.LoopingAudioStream;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,8 +15,9 @@ import java.util.concurrent.CompletionException;
 public class StreamHelper {
 	/**
 	 * Get the audio stream from the given resource location
+	 *
 	 * @param resourceLocation The resource location containing the minecraftified URL of the audio file
-	 * @param isWrapper Whether the audio stream should be wrapped in a looping audio stream
+	 * @param isWrapper        Whether the audio stream should be wrapped in a looping audio stream
 	 * @return A completable future containing the audio stream
 	 */
 	public static CompletableFuture<AudioStream> getStream(ResourceLocation resourceLocation, boolean isWrapper) {
@@ -40,7 +41,7 @@ public class StreamHelper {
 					return null;
 				}
 
-				return (AudioStream) (isWrapper ? new LoopingAudioStream(JOrbisAudioStream::new, inputStream) : new JOrbisAudioStream(inputStream));
+				return (AudioStream) (isWrapper ? new LoopingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream));
 			} catch (IOException ioexception) {
 				throw new CompletionException(ioexception);
 			}

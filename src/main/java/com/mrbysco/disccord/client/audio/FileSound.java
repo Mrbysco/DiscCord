@@ -34,7 +34,7 @@ public class FileSound implements SoundInstance {
 
 	@Override
 	public Sound getSound() {
-		return new Sound(getLocation(), ConstantFloat.of((float) getVolume()), ConstantFloat.of((float) getPitch()), 1, Sound.Type.SOUND_EVENT, true, false, 64);
+		return new Sound(getLocation().toString(), ConstantFloat.of((float) getVolume()), ConstantFloat.of((float) getPitch()), 1, Sound.Type.SOUND_EVENT, true, false, 64);
 	}
 
 	@Override

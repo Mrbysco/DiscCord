@@ -3,16 +3,16 @@
   "category": "equipment",
   "key": {
     "D": {
-      "tag": "c:music_discs"
+      "tag": "minecraft:music_discs"
     },
     "E": {
-      "tag": "c:ender_pearls"
+      "tag": "forge:ender_pearls"
     },
     "P": {
       "item": "minecraft:paper"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "tag": "forge:dusts/redstone"
     }
   },
   "pattern": [
@@ -21,7 +21,7 @@
     "RDR"
   ],
   "result": {
-    "count": 1,
-    "id": "disccord:custom_record"
-  }
+    "item": "disccord:custom_record"
+  },
+  "show_notification": true
 }

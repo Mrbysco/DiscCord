@@ -1,8 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8.5",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "package": "com.mrbysco.disccord.mixin",
+  "refmap": "disccord.refmap.json",
   "target": "@env(DEFAULT)",
   "mixins": [
     "JukeboxBlockEntityMixin"

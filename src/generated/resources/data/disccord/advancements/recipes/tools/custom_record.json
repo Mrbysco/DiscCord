@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:music_discs"
+            "tag": "minecraft:music_discs"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:ender_pearls"
+            "tag": "forge:ender_pearls"
           }
         ]
       },
@@ -25,7 +25,9 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:paper"
+            "items": [
+              "minecraft:paper"
+            ]
           }
         ]
       },
@@ -35,7 +37,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:dusts/redstone"
+            "tag": "forge:dusts/redstone"
           }
         ]
       },
@@ -50,16 +52,17 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_paper",
       "has_ender_pearl",
       "has_redstone",
-      "has_disc"
+      "has_disc",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "disccord:custom_record"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
