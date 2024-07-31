@@ -24,6 +24,10 @@ public class MusicDiscScreen extends Screen {
 		this.inputDefaultText = inputDefaultText;
 	}
 
+	public static void openScreen(Component title, String inputDefaultText) {
+		Minecraft.getInstance().setScreen(new MusicDiscScreen(title, inputDefaultText));
+	}
+
 	public void updateTextPosition() {
 		if (font == null) {
 			return;
