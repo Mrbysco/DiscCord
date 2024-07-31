@@ -41,7 +41,7 @@ public class StreamHelper {
 					return null;
 				}
 
-				return (AudioStream) (isWrapper ? new LoopingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream));
+				return isWrapper ? new LoopingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException ioexception) {
 				throw new CompletionException(ioexception);
 			}

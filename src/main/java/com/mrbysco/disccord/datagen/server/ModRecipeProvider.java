@@ -1,9 +1,8 @@
 package com.mrbysco.disccord.datagen.server;
 
 import com.mrbysco.disccord.registry.ModRegistry;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
@@ -14,13 +13,13 @@ import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
 
-	public ModRecipeProvider(PackOutput packOutput) {
-		super(packOutput);
+	public ModRecipeProvider(DataGenerator generator) {
+		super(generator);
 	}
 
 	@Override
-	protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModRegistry.CUSTOM_RECORD.get())
+	protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+		ShapedRecipeBuilder.shaped(ModRegistry.CUSTOM_RECORD.get())
 				.pattern("PPP")
 				.pattern("PEP")
 				.pattern("RDR")

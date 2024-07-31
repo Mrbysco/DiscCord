@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[43,)"
 issueTrackerURL="https://github.com/Mrbysco/DiscCord/issues"
 license="MIT"
 
@@ -15,12 +15,12 @@ A mod that allows you to write music URLs on a Custom Record to play in a Jukebo
 [[dependencies.disccord]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20.1,1.21)"
+versionRange="[1.19.2,1.20)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.disccord]]
 modId="forge"
 mandatory=true
-versionRange="[47.1.3,)"
+versionRange="[43.1.0,)"
 ordering="NONE"
 side="BOTH"

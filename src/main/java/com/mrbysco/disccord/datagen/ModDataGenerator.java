@@ -6,41 +6,35 @@ import com.mrbysco.disccord.datagen.client.ModLanguageProvider;
 import com.mrbysco.disccord.datagen.client.ModSoundProvider;
 import com.mrbysco.disccord.datagen.server.ModItemTagsProvider;
 import com.mrbysco.disccord.datagen.server.ModRecipeProvider;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModDataGenerator {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
-		PackOutput packOutput = generator.getPackOutput();
 		ExistingFileHelper helper = event.getExistingFileHelper();
-		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
 		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
-			BlockTagsProvider blockTags = new BlockTagsProvider(packOutput, lookupProvider, DiscCordMod.MOD_ID, helper) {
+			generator.addProvider(event.includeServer(), new ModRecipeProvider(generator));
+			BlockTagsProvider blockTags = new BlockTagsProvider(generator, DiscCordMod.MOD_ID, helper) {
 				@Override
-				protected void addTags(HolderLookup.Provider provider) {
+				protected void addTags() {
 
 				}
 			};
 			generator.addProvider(event.includeServer(), blockTags);
-			generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput, lookupProvider, blockTags, helper));
+			generator.addProvider(event.includeServer(), new ModItemTagsProvider(generator, blockTags, helper));
 		}
 		if (event.includeClient()) {
-			generator.addProvider(event.includeClient(), new ModLanguageProvider(packOutput));
-			generator.addProvider(event.includeClient(), new ModSoundProvider(packOutput, helper));
-			generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, helper));
+			generator.addProvider(event.includeClient(), new ModLanguageProvider(generator));
+			generator.addProvider(event.includeClient(), new ModSoundProvider(generator, helper));
+			generator.addProvider(event.includeClient(), new ModItemModelProvider(generator, helper));
 		}
 	}
 }

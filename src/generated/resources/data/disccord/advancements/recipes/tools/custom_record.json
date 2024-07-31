@@ -63,6 +63,5 @@
     "recipes": [
       "disccord:custom_record"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

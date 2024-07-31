@@ -1,12 +1,14 @@
 package com.mrbysco.disccord.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.network.PacketHandler;
 import com.mrbysco.disccord.network.payload.SetRecordUrlMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.PacketDistributor;
@@ -14,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class MusicDiscScreen extends Screen {
 	private static final ResourceLocation TEXTURE = DiscCordMod.modLoc("textures/gui/record_input.png");
-	private static final ResourceLocation TEXT_FIELD_TEXTURE = new ResourceLocation("minecraft", "container/anvil/text_field");
+	private static final ResourceLocation TEXT_FIELD_TEXTURE = new ResourceLocation("minecraft", "container/anvil");
 	private EditBox nameField;
 
 	private final int backgroundWidth = 176;
@@ -43,7 +45,7 @@ public class MusicDiscScreen extends Screen {
 		this.nameField.setTextColor(-1);
 		this.nameField.setTextColorUneditable(-1);
 		this.nameField.setBordered(false);
-		this.nameField.setMaxLength(200);
+		this.nameField.setMaxLength(250);
 		this.nameField.setResponder(this::onRenamed);
 		this.nameField.setValue(this.inputDefaultText);
 		this.addWidget(this.nameField);
@@ -79,16 +81,21 @@ public class MusicDiscScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, TEXTURE);
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
-		graphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-		graphics.blit(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 0, 110, 16);
+		blit(poseStack, x, y, 0, 0, backgroundWidth, backgroundHeight);
+
+		RenderSystem.setShaderTexture(0, TEXT_FIELD_TEXTURE);
+		blit(poseStack, x + 59, y + 14, 0, 0, 110, 16);
 
 		if (this.nameField == null) {
 			updateTextPosition();
 		}
 
-		this.nameField.render(graphics, mouseX, mouseY, partialTick);
+		this.nameField.render(poseStack, mouseX, mouseY, partialTick);
 	}
 }

@@ -18,5 +18,5 @@ public class ModRegistry {
 	);
 
 	public static final RegistryObject<SoundEvent> PLACEHOLDER_SOUND = SOUND_EVENTS.register("placeholder_sound", () ->
-			SoundEvent.createVariableRangeEvent(DiscCordMod.modLoc("placeholder_sound")));
+			new SoundEvent(DiscCordMod.modLoc("placeholder_sound")));
 }

@@ -14,7 +14,7 @@ public class ClientHandler {
 
 	public static void playRecord(BlockPos pos, String fileUrl) {
 		Minecraft mc = Minecraft.getInstance();
-		Vec3 centerPos = pos.getCenter();
+		Vec3 centerPos = Vec3.atCenterOf(pos);
 
 		FileSound currentSound = ClientHandler.playingSounds.get(centerPos);
 

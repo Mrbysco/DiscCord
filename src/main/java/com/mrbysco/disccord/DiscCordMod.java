@@ -5,9 +5,7 @@ import com.mrbysco.disccord.config.DiscCordConfig;
 import com.mrbysco.disccord.network.PacketHandler;
 import com.mrbysco.disccord.registry.ModRegistry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -31,7 +29,6 @@ public class DiscCordMod {
 		ModRegistry.ITEMS.register(eventBus);
 		ModRegistry.SOUND_EVENTS.register(eventBus);
 
-		eventBus.addListener(this::addTabContents);
 		eventBus.addListener(this::setup);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
@@ -41,12 +38,6 @@ public class DiscCordMod {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		PacketHandler.init();
-	}
-
-	private void addTabContents(final BuildCreativeModeTabContentsEvent event) {
-		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-			event.accept(ModRegistry.CUSTOM_RECORD.get());
-		}
 	}
 
 	public static ResourceLocation modLoc(String path) {

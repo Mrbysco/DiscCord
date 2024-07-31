@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(JukeboxBlockEntity.class)
 public class JukeboxBlockEntityMixin {
-	@Inject(at = @At("TAIL"), method = "popOutRecord")
-	public void disccord$popOutRecord(CallbackInfo ci) {
+	@Inject(at = @At("TAIL"), method = "clearContent")
+	public void disccord$clearContent(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
 		if (!jukebox.getLevel().isClientSide) {
@@ -29,11 +29,11 @@ public class JukeboxBlockEntityMixin {
 		}
 	}
 
-	@Inject(method = "startPlaying()V", at = @At("HEAD"))
-	public void disccord$startPlaying(CallbackInfo ci) {
+	@Inject(method = "playRecord()V", at = @At("HEAD"))
+	public void disccord$playRecord(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 		Level level = jukebox.getLevel();
-		ItemStack stack = jukebox.getFirstItem();
+		ItemStack stack = jukebox.getRecord();
 		if (stack.is(ModRegistry.CUSTOM_RECORD.get()) && level instanceof ServerLevel) {
 			CompoundTag tag = stack.getTag();
 			if (tag == null) {

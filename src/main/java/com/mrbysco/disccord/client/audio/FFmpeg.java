@@ -84,8 +84,7 @@ public class FFmpeg {
 					zipEntry = zipInput.getNextEntry();
 				}
 
-				if (!zipFile.delete())
-					DiscCordMod.LOGGER.error("Failed to delete the {} file", zipFile.getName());
+				zipFile.delete();
 			} else {
 				if (mc.player != null) {
 					mc.player.sendSystemMessage(Component.translatable("disccord.ffmpeg.missing").withStyle(ChatFormatting.RED));

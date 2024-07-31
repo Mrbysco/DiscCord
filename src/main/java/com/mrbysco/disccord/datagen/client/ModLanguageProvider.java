@@ -2,13 +2,13 @@ package com.mrbysco.disccord.datagen.client;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.registry.ModRegistry;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class ModLanguageProvider extends LanguageProvider {
 
-	public ModLanguageProvider(PackOutput packOutput) {
-		super(packOutput, DiscCordMod.MOD_ID, "en_us");
+	public ModLanguageProvider(DataGenerator generator) {
+		super(generator, DiscCordMod.MOD_ID, "en_us");
 	}
 
 	@Override

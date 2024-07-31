@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,7 +24,7 @@ import java.util.function.Supplier;
 
 public class DiscCordItem extends RecordItem {
 	public DiscCordItem(Properties properties, int comparatorOutput, Supplier<SoundEvent> soundEvent, int lengthInSeconds) {
-		super(comparatorOutput, soundEvent, properties, lengthInSeconds);
+		super(comparatorOutput, soundEvent, properties.tab(CreativeModeTab.TAB_TOOLS), lengthInSeconds);
 	}
 
 	@Override
