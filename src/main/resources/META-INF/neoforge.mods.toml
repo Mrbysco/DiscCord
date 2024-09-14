@@ -21,8 +21,10 @@ side="BOTH"
 [[dependencies.disccord]]
 modId="neoforge"
 type="required"
-versionRange="[21.0.110-beta,)"
+versionRange="[21.1.0,)"
 ordering="NONE"
 side="BOTH"
 [[mixins]]
 config="disccord.mixins.json"
+[[mixins]]
+config="disccord.compat.mixins.json"

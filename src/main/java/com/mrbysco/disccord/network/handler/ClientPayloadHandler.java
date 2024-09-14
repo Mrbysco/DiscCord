@@ -9,6 +9,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.UUID;
+
 public class ClientPayloadHandler {
 	private static final ClientPayloadHandler INSTANCE = new ClientPayloadHandler();
 
@@ -39,7 +41,8 @@ public class ClientPayloadHandler {
 					if (FMLEnvironment.dist.isClient()) {
 						Vec3 centerPos = data.pos().getCenter();
 						String fileUrl = data.url();
-						com.mrbysco.disccord.client.ClientHandler.playRecord(centerPos, fileUrl);
+						UUID uuid = data.uuid();
+						com.mrbysco.disccord.client.ClientHandler.playRecord(centerPos, fileUrl, uuid);
 					}
 				})
 				.exceptionally(e -> {
