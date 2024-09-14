@@ -1,1 +1,1 @@
-* Fix server crashing on start-up
+* Add support for Sophisticated Core
