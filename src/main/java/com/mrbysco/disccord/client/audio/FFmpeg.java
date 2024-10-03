@@ -30,7 +30,7 @@ public class FFmpeg {
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
-		if (checkFFMpegPath()) {
+		if (checkFFMpegPath("ffmpeg")) {
 			ffmpegPath = "ffmpeg";
 			return;
 		}
@@ -78,7 +78,9 @@ public class FFmpeg {
 
 				while (zipEntry != null) {
 					if (zipEntry.getName().endsWith("ffmpeg.exe") || zipEntry.getName().endsWith("ffmpeg")) {
-						Files.copy(zipInput, FFmpegDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+						Path outPath = FFmpegDirectory.toPath().resolve(fileName);
+						Files.copy(zipInput, outPath, StandardCopyOption.REPLACE_EXISTING);
+						outPath.toFile().setExecutable(true);
 					}
 					zipEntry = zipInput.getNextEntry();
 				}
@@ -109,9 +111,9 @@ public class FFmpeg {
 	 * Checks if the 'ffmpeg' executable is in the path
 	 * @return Whether the 'ffmpeg' executable is present
 	 */
-	static boolean checkFFMpegPath() {
+	static boolean checkFFMpegPath(String path) {
 		// Check if running the executable with the '--version' argument works
-		ProcessBuilder builder = new ProcessBuilder("ffmpeg", "-version");
+		ProcessBuilder builder = new ProcessBuilder(path, "-version");
 		Process process;
 		try {
 			process = builder.start();
@@ -139,9 +141,19 @@ public class FFmpeg {
 		if (ffmpegPath == null) {
 			checkForExecutable();
 		}
-		if (Path.of(ffmpegPath).toFile().exists()) {
-			Process resultProcess = Runtime.getRuntime().exec(ffmpegPath + " " + arguments);
+		if (checkFFMpegPath(ffmpegPath)) {
+			String cmd = ffmpegPath + " " + arguments;
+			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
+			Process resultProcess;
+			if (SystemUtils.IS_OS_LINUX) {
+				String[] cmds = {"/bin/sh", "-c", cmd};
+				resultProcess = Runtime.getRuntime().exec(cmds);
+			} else {
+				resultProcess = Runtime.getRuntime().exec(cmd);
+			}
 			resultProcess.waitFor();
+		} else {
+			DiscCordMod.LOGGER.error("'{}' isn't executable", ffmpegPath);
 		}
 	}
 

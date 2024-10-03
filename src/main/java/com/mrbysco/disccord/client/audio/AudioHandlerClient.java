@@ -34,17 +34,18 @@ public class AudioHandlerClient {
 	public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) {
 		return CompletableFuture.supplyAsync(() -> {
 			String hashedName = Hashing.Sha256(getMinecraftified(urlName));
-			File audioIn = new File(FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName + ".raw").toString());
+			String audioIn = FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName).toString();
 			File audioOut = new File(FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
 
+			String inPath;
 			try {
-				YoutubeDL.executeYoutubeDLCommand(String.format("--quiet -S res:144 -o \"%s\" %s", audioIn.getAbsolutePath(), urlName));
+				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" %s --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 
 			try {
-				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", audioIn.getAbsolutePath(), audioOut.getAbsolutePath()));
+				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", inPath, audioOut.getAbsolutePath()));
 			} catch (IOException | InterruptedException e) {
 				throw new RuntimeException(e);
 			}

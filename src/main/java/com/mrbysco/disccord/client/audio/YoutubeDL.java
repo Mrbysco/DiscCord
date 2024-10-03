@@ -9,9 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,8 +35,8 @@ public class YoutubeDL {
 			case OSX -> "yt-dlp_macos";
 			default -> "yt-dlp.exe";
 		};
-		if (checkYoutubeDLPath(fileName)) {
-			youtubedlPath = fileName;
+		if (checkYoutubeDLPath("yt-dlp")) {
+			youtubedlPath = "yt-dlp";
 			return;
 		}
 		File YoutubeDLDirectory = FMLPaths.CONFIGDIR.get().resolve("disccord/youtubedl/").toAbsolutePath().toFile();
@@ -60,7 +62,9 @@ public class YoutubeDL {
 				}
 
 				if (inputStream != null) {
-					Files.copy(inputStream, YoutubeDLDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+					Path outPath = YoutubeDLDirectory.toPath().resolve(fileName);
+					Files.copy(inputStream, outPath, StandardCopyOption.REPLACE_EXISTING);
+					outPath.toFile().setExecutable(true);
 				} else {
 					DiscCordMod.LOGGER.error("Failed to download the yt-dlp executable");
 				}
@@ -115,13 +119,33 @@ public class YoutubeDL {
 	 * @throws IOException If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
-	static void executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
+	static String executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
 		if (youtubedlPath == null) {
 			checkForExecutable();
 		}
-		if (Path.of(youtubedlPath).toFile().exists()) {
-			Process resultProcess = Runtime.getRuntime().exec(youtubedlPath + " " + arguments);
-			resultProcess.waitFor();
+		if (checkYoutubeDLPath(youtubedlPath)) {
+			String cmd = youtubedlPath + " " + arguments;
+			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
+			Process resultProcess;
+			if (SystemUtils.IS_OS_LINUX) {
+				String[] cmds = { "/bin/sh", "-c", cmd };
+				resultProcess = Runtime.getRuntime().exec(cmds);
+			} else {
+				resultProcess = Runtime.getRuntime().exec(cmd);
+			}
+
+			BufferedReader stdInput = new BufferedReader(new 
+				InputStreamReader(resultProcess.getInputStream()));
+
+			String output = "";
+			String s = null;
+			while ((s = stdInput.readLine()) != null) {
+				output += s;
+			}
+			return output;
+		} else {
+			DiscCordMod.LOGGER.error("'{}' isn't executable", youtubedlPath);
+			throw new IOException("Unable to execute " + youtubedlPath);
 		}
 	}
 
