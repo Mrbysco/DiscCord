@@ -94,7 +94,7 @@ public class FFmpeg {
 				}
 			}
 		} else {
-			if (SystemUtils.IS_OS_WINDOWS || !ffmpegFile.canExecute()) {
+			if (SystemUtils.IS_OS_WINDOWS || ffmpegFile.canExecute()) {
 				ffmpegPath = ffmpegFile.getAbsolutePath();
 			} else {
 				if (mc.player != null) {

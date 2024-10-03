@@ -73,7 +73,7 @@ public class YoutubeDL {
 				}
 			}
 		} else {
-			if (SystemUtils.IS_OS_WINDOWS || !ffmpegFile.canExecute()) {
+			if (SystemUtils.IS_OS_WINDOWS || ffmpegFile.canExecute()) {
 				youtubedlPath = ffmpegFile.getAbsolutePath();
 			} else {
 				if (mc.player != null) {
