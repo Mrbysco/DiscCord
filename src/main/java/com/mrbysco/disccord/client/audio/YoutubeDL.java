@@ -125,7 +125,7 @@ public class YoutubeDL {
 		}
 		if (checkYoutubeDLPath(youtubedlPath)) {
 			String cmd = youtubedlPath + " " + arguments;
-			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
+//			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
 			Process resultProcess;
 			if (SystemUtils.IS_OS_LINUX) {
 				String[] cmds = { "/bin/sh", "-c", cmd };
