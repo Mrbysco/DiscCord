@@ -39,7 +39,7 @@ public class AudioHandlerClient {
 
 			String inPath;
 			try {
-				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" %s --print after_move:filepath", audioIn, urlName));
+				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" \"%s\" --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
 				throw new RuntimeException(e);
 			}

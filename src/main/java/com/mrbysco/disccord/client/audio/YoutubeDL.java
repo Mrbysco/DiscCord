@@ -18,6 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 /**
  * This class is responsible for checking if the 'yt-dlp' executable is in the path, if not it will download it if the user has enabled the option
@@ -35,8 +36,9 @@ public class YoutubeDL {
 			case OSX -> "yt-dlp_macos";
 			default -> "yt-dlp.exe";
 		};
-		if (checkYoutubeDLPath("yt-dlp")) {
-			youtubedlPath = "yt-dlp";
+		Optional<String> pathExecutable = PathTools.traversePath("yt-dlp");
+		if (!pathExecutable.isEmpty()) {
+			youtubedlPath = pathExecutable.get().toString();
 			return;
 		}
 		File YoutubeDLDirectory = FMLPaths.CONFIGDIR.get().resolve("disccord/youtubedl/").toAbsolutePath().toFile();
@@ -89,64 +91,35 @@ public class YoutubeDL {
 	}
 
 	/**
-	 * Checks if the 'yt-dlp' executable is in the path
-	 * @param fileName The name of the 'yt-dlp' executable
-	 * @return Whether the 'yt-dlp' executable is present
-	 */
-	static boolean checkYoutubeDLPath(String fileName) {
-		// Check if running the executable with the '--version' argument works
-		ProcessBuilder builder = new ProcessBuilder(fileName, "--version");
-		Process process;
-		try {
-			process = builder.start();
-		} catch (IOException ex) {
-			return false;
-		}
-		int exitCode;
-		while (true) {
-			try {
-				exitCode = process.waitFor();
-				break;
-			} catch (InterruptedException ignored) {
-			}
-		}
-		return exitCode == 0;
-	}
-
-	/**
 	 * Executes a command using the 'yt-dlp' executable
 	 * @param arguments The arguments to pass to the 'yt-dlp' executable
 	 * @throws IOException If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static String executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
-		if (youtubedlPath == null) {
+		if (youtubedlPath == null || ! new File(youtubedlPath).canExecute()) {
 			checkForExecutable();
 		}
-		if (checkYoutubeDLPath(youtubedlPath)) {
-			String cmd = youtubedlPath + " " + arguments;
-//			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
-			Process resultProcess;
-			if (SystemUtils.IS_OS_LINUX) {
-				String[] cmds = { "/bin/sh", "-c", cmd };
-				resultProcess = Runtime.getRuntime().exec(cmds);
-			} else {
-				resultProcess = Runtime.getRuntime().exec(cmd);
-			}
 
-			BufferedReader stdInput = new BufferedReader(new 
-				InputStreamReader(resultProcess.getInputStream()));
-
-			String output = "";
-			String s = null;
-			while ((s = stdInput.readLine()) != null) {
-				output += s;
-			}
-			return output;
+		String cmd = youtubedlPath + " " + arguments;
+		DiscCordMod.LOGGER.debug("Executing '{}'", cmd);
+		Process resultProcess;
+		if (SystemUtils.IS_OS_LINUX) {
+			String[] cmds = { "/bin/sh", "-c", cmd };
+			resultProcess = Runtime.getRuntime().exec(cmds);
 		} else {
-			DiscCordMod.LOGGER.error("'{}' isn't executable", youtubedlPath);
-			throw new IOException("Unable to execute " + youtubedlPath);
+			resultProcess = Runtime.getRuntime().exec(cmd);
 		}
+
+		BufferedReader stdInput = new BufferedReader(new 
+			InputStreamReader(resultProcess.getInputStream()));
+
+		String output = "";
+		String s = null;
+		while ((s = stdInput.readLine()) != null) {
+			output += s;
+		}
+		return output;
 	}
 
 	/**
