@@ -129,7 +129,11 @@ public class FFmpeg {
 		} else {
 			resultProcess = Runtime.getRuntime().exec(cmd);
 		}
-		resultProcess.waitFor();
+
+		int result = resultProcess.waitFor();
+		if (result != 0) {
+			throw new IOException("Process exited with error code " + result);
+		}
 	}
 
 	/**

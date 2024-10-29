@@ -119,6 +119,11 @@ public class YoutubeDL {
 		while ((s = stdInput.readLine()) != null) {
 			output += s;
 		}
+
+		int result = resultProcess.waitFor();
+		if (result != 0) {
+			throw new IOException("Process exited with error code " + result);
+		}
 		return output;
 	}
 

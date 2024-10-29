@@ -2,6 +2,10 @@ package com.mrbysco.disccord.client.audio;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.util.Hashing;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -33,20 +37,25 @@ public class AudioHandlerClient {
 	 */
 	public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) {
 		return CompletableFuture.supplyAsync(() -> {
+			Minecraft mc = Minecraft.getInstance();
+
 			String hashedName = Hashing.Sha256(getMinecraftified(urlName));
 			String audioIn = FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName).toString();
 			File audioOut = new File(FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
 
 			String inPath;
+
 			try {
 				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" \"%s\" --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 
 			try {
 				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", inPath, audioOut.getAbsolutePath()));
 			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 
