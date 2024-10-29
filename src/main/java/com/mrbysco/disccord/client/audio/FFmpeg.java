@@ -122,7 +122,7 @@ public class FFmpeg {
 		}
 
 		String cmd = ffmpegPath + " " + arguments;
-		DiscCordMod.LOGGER.error("Executing '{}'", cmd);
+		DiscCordMod.LOGGER.debug("Executing '{}'", cmd);
 		Process resultProcess;
 		if (SystemUtils.IS_OS_LINUX) {
 			String[] cmds = {"/bin/sh", "-c", cmd};
