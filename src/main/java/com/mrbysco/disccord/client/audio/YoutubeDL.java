@@ -66,6 +66,7 @@ public class YoutubeDL {
 				if (inputStream != null) {
 					Path outPath = YoutubeDLDirectory.toPath().resolve(fileName);
 					Files.copy(inputStream, outPath, StandardCopyOption.REPLACE_EXISTING);
+					youtubedlPath = outPath.toString();
 					outPath.toFile().setExecutable(true);
 				} else {
 					DiscCordMod.LOGGER.error("Failed to download the yt-dlp executable");

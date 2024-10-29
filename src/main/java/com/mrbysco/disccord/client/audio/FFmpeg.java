@@ -82,6 +82,7 @@ public class FFmpeg {
 					if (zipEntry.getName().endsWith("ffmpeg.exe") || zipEntry.getName().endsWith("ffmpeg")) {
 						Path outPath = FFmpegDirectory.toPath().resolve(fileName);
 						Files.copy(zipInput, outPath, StandardCopyOption.REPLACE_EXISTING);
+						ffmpegPath = outPath.toString();
 						outPath.toFile().setExecutable(true);
 					}
 					zipEntry = zipInput.getNextEntry();
