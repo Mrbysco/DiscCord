@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(JukeboxBlockEntity.class)
 public class JukeboxBlockEntityMixin {
-	@Inject(at = @At("TAIL"), method = "popOutTheItem", cancellable = true)
+	@Inject(at = @At("TAIL"), method = "popOutTheItem")
 	public void disccord$popOutTheItem(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
@@ -30,7 +30,7 @@ public class JukeboxBlockEntityMixin {
 			value = "INVOKE",
 			target = "Lnet/minecraft/world/item/JukeboxSongPlayer;play(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/Holder;)V",
 			shift = At.Shift.AFTER,
-			ordinal = 0), cancellable = true)
+			ordinal = 0))
 	public void disccord$setTheItem(ItemStack stack, CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 		Level level = jukebox.getLevel();
