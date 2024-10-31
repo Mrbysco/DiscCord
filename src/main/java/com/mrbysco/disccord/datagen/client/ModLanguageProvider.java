@@ -35,6 +35,8 @@ public class ModLanguageProvider extends LanguageProvider {
 		add("disccord.song_url.long", "Song URL is too long!");
 		add("disccord.song_url.websites", "Song URL must be a %s URL!");
 		add("disccord.song.downloading", "Downloading music, please wait a moment...");
+		add("disccord.song.downloading_failed", "Downloading music failed");
+		add("disccord.song.transcoding_failed", "Transcoding music failed");
 		add("disccord.song.succeed", "Downloading complete!");
 		add("disccord.song.failed", "Failed to download music!");
 		add("disccord.ffmpeg.missing", "Could not find FFmpeg executable, check the log for more information!");

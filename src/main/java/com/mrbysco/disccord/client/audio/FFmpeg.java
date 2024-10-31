@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,8 +31,9 @@ public class FFmpeg {
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
-		if (checkFFMpegPath("ffmpeg")) {
-			ffmpegPath = "ffmpeg";
+		Optional<String> pathExecutable = PathTools.traversePath("ffmpeg");
+		if (!pathExecutable.isEmpty()) {
+			ffmpegPath = pathExecutable.get().toString();
 			return;
 		}
 
@@ -80,6 +82,7 @@ public class FFmpeg {
 					if (zipEntry.getName().endsWith("ffmpeg.exe") || zipEntry.getName().endsWith("ffmpeg")) {
 						Path outPath = FFmpegDirectory.toPath().resolve(fileName);
 						Files.copy(zipInput, outPath, StandardCopyOption.REPLACE_EXISTING);
+						ffmpegPath = outPath.toString();
 						outPath.toFile().setExecutable(true);
 					}
 					zipEntry = zipInput.getNextEntry();
@@ -108,52 +111,29 @@ public class FFmpeg {
 	}
 
 	/**
-	 * Checks if the 'ffmpeg' executable is in the path
-	 * @return Whether the 'ffmpeg' executable is present
-	 */
-	static boolean checkFFMpegPath(String path) {
-		// Check if running the executable with the '--version' argument works
-		ProcessBuilder builder = new ProcessBuilder(path, "-version");
-		Process process;
-		try {
-			process = builder.start();
-		} catch (IOException ex) {
-			return false;
-		}
-		int exitCode;
-		while (true) {
-			try {
-				exitCode = process.waitFor();
-				break;
-			} catch (InterruptedException ignored) {
-			}
-		}
-		return exitCode == 0;
-	}
-
-	/**
 	 * Executes a command using the 'ffmpeg' executable
 	 * @param arguments The arguments to pass to the 'ffmpeg' executable
 	 * @throws IOException If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static void executeFFmpegCommand(String arguments) throws IOException, InterruptedException {
-		if (ffmpegPath == null) {
+		if (ffmpegPath == null || ! new File(ffmpegPath).canExecute()) {
 			checkForExecutable();
 		}
-		if (checkFFMpegPath(ffmpegPath)) {
-			String cmd = ffmpegPath + " " + arguments;
-			DiscCordMod.LOGGER.error("Executing '{}'", cmd);
-			Process resultProcess;
-			if (SystemUtils.IS_OS_LINUX) {
-				String[] cmds = {"/bin/sh", "-c", cmd};
-				resultProcess = Runtime.getRuntime().exec(cmds);
-			} else {
-				resultProcess = Runtime.getRuntime().exec(cmd);
-			}
-			resultProcess.waitFor();
+
+		String cmd = ffmpegPath + " " + arguments;
+		DiscCordMod.LOGGER.debug("Executing '{}'", cmd);
+		Process resultProcess;
+		if (SystemUtils.IS_OS_LINUX) {
+			String[] cmds = {"/bin/sh", "-c", cmd};
+			resultProcess = Runtime.getRuntime().exec(cmds);
 		} else {
-			DiscCordMod.LOGGER.error("'{}' isn't executable", ffmpegPath);
+			resultProcess = Runtime.getRuntime().exec(cmd);
+		}
+
+		int result = resultProcess.waitFor();
+		if (result != 0) {
+			throw new IOException("Process exited with error code " + result);
 		}
 	}
 
