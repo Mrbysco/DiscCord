@@ -37,7 +37,7 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 	public abstract ItemStack getDisc();
 
 	@Shadow
-	public abstract void play(Level level, BiConsumer<ServerLevel, UUID> play);
+	protected abstract void play(Level level, BiConsumer<ServerLevel, UUID> play);
 
 	@Inject(at = @At("HEAD"), method = "stop(Lnet/minecraft/world/entity/LivingEntity;)V")
 	public void disccord$stop(LivingEntity entity, CallbackInfo ci) {
