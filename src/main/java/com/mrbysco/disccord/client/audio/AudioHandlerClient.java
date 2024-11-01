@@ -2,6 +2,9 @@ package com.mrbysco.disccord.client.audio;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.util.Hashing;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -15,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
 public class AudioHandlerClient {
 	/**
 	 * Check for the audio file related to the given URL
-	 *
 	 * @param urlName The URL to check for
 	 * @return Whether the audio file exists
 	 */
@@ -29,25 +31,30 @@ public class AudioHandlerClient {
 
 	/**
 	 * Download the audio file from the given URL and convert it to OGG format
-	 *
 	 * @param urlName The URL to download the audio from
 	 * @return A CompletableFuture that will be completed when the download is finished
 	 */
 	public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) {
 		return CompletableFuture.supplyAsync(() -> {
+			Minecraft mc = Minecraft.getInstance();
+
 			String hashedName = Hashing.Sha256(getMinecraftified(urlName));
-			File audioIn = new File(FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName + ".raw").toString());
+			String audioIn = FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName).toString();
 			File audioOut = new File(FMLPaths.CONFIGDIR.get().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
 
+			String inPath;
+
 			try {
-				YoutubeDL.executeYoutubeDLCommand(String.format("--quiet -S res:144 -o \"%s\" %s", audioIn.getAbsolutePath(), urlName));
+				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" \"%s\" --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 
 			try {
-				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", audioIn.getAbsolutePath(), audioOut.getAbsolutePath()));
+				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", inPath, audioOut.getAbsolutePath()));
 			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 
@@ -59,7 +66,6 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get an InputStream for the audio file related to the given URL
-	 *
 	 * @param urlName The URL to get the audio file for
 	 * @return An InputStream for the audio file
 	 */
@@ -81,7 +87,6 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get the minecraftified version of the URL (Replacing all resource location invalid characters with underscores)
-	 *
 	 * @param url The URL to minecraftify
 	 * @return The minecraftified URL
 	 */
