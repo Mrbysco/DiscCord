@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class MusicDiscScreen extends Screen {
 	private static final ResourceLocation TEXTURE = DiscCordMod.modLoc("textures/gui/record_input.png");
-	private static final ResourceLocation TEXT_FIELD_TEXTURE = new ResourceLocation("minecraft", "container/anvil/text_field");
+	private static final ResourceLocation TEXT_FIELD_TEXTURE = new ResourceLocation("textures/gui/container/anvil.png");
 	private EditBox nameField;
 
 	private final int backgroundWidth = 176;
@@ -83,7 +83,7 @@ public class MusicDiscScreen extends Screen {
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
 		graphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-		graphics.blit(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 0, 110, 16);
+		graphics.blit(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 182, 110, 16);
 
 		if (this.nameField == null) {
 			updateTextPosition();
