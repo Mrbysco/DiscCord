@@ -24,6 +24,12 @@ type="required"
 versionRange="[21.1.0,)"
 ordering="NONE"
 side="BOTH"
+[[dependencies.disccord]]
+modId="sophisticatedcore"
+type="optional"
+versionRange="[1.0.5,)"
+ordering="NONE"
+side="BOTH"
 [[mixins]]
 config="disccord.mixins.json"
 [[mixins]]
