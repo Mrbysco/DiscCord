@@ -6,6 +6,7 @@ import com.mrbysco.disccord.registry.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -63,13 +64,13 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "play(Lnet/minecraft/world/entity/LivingEntity;)V", cancellable = true)
-	public void disccord$play2(LivingEntity livingEntity, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "play(Lnet/minecraft/world/entity/Entity;)V", cancellable = true)
+	public void disccord$play2(Entity entity, CallbackInfo ci) {
 		if (getDisc().is(ModRegistry.CUSTOM_RECORD.asItem())) {
-			this.play(livingEntity.level(), (serverLevel, storageUuid) -> {
+			this.play(entity.level(), (serverLevel, storageUuid) -> {
 				String musicUrl = getDisc().getOrDefault(ModDataComponents.MUSIC_URL.get(), "");
-				PacketDistributor.sendToPlayersNear(serverLevel, (ServerPlayer) null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 128.0,
-						new PlayRecordPayload(livingEntity.blockPosition(), musicUrl, storageUuid));
+				PacketDistributor.sendToPlayersNear(serverLevel, (ServerPlayer) null, entity.getX(), entity.getY(), entity.getZ(), 128.0,
+						new PlayRecordPayload(entity.blockPosition(), musicUrl, storageUuid));
 			});
 			ci.cancel();
 		}
