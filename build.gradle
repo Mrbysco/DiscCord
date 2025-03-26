@@ -198,8 +198,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.changelog = file("$project.rootDir/changelog.md")
         mainFile.changelogType = 'markdown'
 
-//        mainFile.addRequirement()
-//        mainFile.addOptional()
+        mainFile.addOptional("sophisticated-core")
     }
 }
 
@@ -216,7 +215,7 @@ if (System.getenv().MODRINTH_KEY) {
         loaders = ["forge", "neoforge"]
 
         dependencies {
-
+            optional.project "sophisticated-core"
         }
     }
 }

@@ -1,1 +1,1 @@
-* Implement changes to ffmpeg handling
+* Backport Sophisticated Backpacks support
