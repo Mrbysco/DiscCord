@@ -111,11 +111,18 @@ configurations {
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "${mod_id}.mixins.json"
+    config "${mod_id}.compat.mixins.json"
 }
 
 repositories {
     maven {
         url = "https://maven.blamejared.com"
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 
@@ -127,6 +134,10 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
 
     localRuntime fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+
+    compileOnly fg.deobf("curse.maven:sophisticated-core-618298:6317048")
+    localRuntime fg.deobf("curse.maven:sophisticated-core-618298:6317048")
+    localRuntime fg.deobf("curse.maven:sophisticated-backpacks-422301:6303388")
 }
 
 jar {
