@@ -32,6 +32,9 @@ runs {
         //Limit ram usage for the dev environment to 4GB
         jvmArgument '-Xmx4G'
 
+        //Enable Mixin debug output
+        jvmArgument '-Dmixin.debug=true'
+
         if (run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
             run.jvmArgument("-XX:+AllowEnhancedClassRedefinition")
         }
@@ -93,9 +96,9 @@ dependencies {
 
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
-    compileOnly "curse.maven:sophisticated-core-618298:6399188"
-    localRuntime "curse.maven:sophisticated-core-618298:6399188"
-    localRuntime "curse.maven:sophisticated-backpacks-422301:6399191"
+    compileOnly "curse.maven:sophisticated-core-618298:6555839"
+    localRuntime "curse.maven:sophisticated-core-618298:6555839"
+    localRuntime "curse.maven:sophisticated-backpacks-422301:6538419"
 }
 
 jar {
