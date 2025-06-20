@@ -1,1 +1,1 @@
-* Update Sophisticated Core support again (now requires supports 1.3.20 and newer)
+* Initial update to 1.21.4
