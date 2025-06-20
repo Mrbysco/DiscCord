@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:music_discs"
-    },
-    "E": {
-      "tag": "c:ender_pearls"
-    },
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "D": "#c:music_discs",
+    "E": "#c:ender_pearls",
+    "P": "minecraft:paper",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "PPP",

@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
@@ -80,8 +81,8 @@ public class MusicDiscScreen extends Screen {
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
-		graphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-		graphics.blitSprite(TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
+		graphics.blit(RenderType::guiTextured, TEXTURE, x, y, 0, 0, 256, 256, backgroundWidth, backgroundHeight);
+		graphics.blitSprite(RenderType::guiTextured, TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
 
 		if (this.nameField == null) {
 			updateTextPosition();

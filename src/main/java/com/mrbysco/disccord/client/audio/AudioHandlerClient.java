@@ -48,14 +48,14 @@ public class AudioHandlerClient {
 			try {
 				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" \"%s\" --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
-				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
+				mc.player.displayClientMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED), false);
 				throw new RuntimeException(e);
 			}
 
 			try {
 				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", inPath, audioOut.getAbsolutePath()));
 			} catch (IOException | InterruptedException e) {
-				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
+				mc.player.displayClientMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED), false);
 				throw new RuntimeException(e);
 			}
 

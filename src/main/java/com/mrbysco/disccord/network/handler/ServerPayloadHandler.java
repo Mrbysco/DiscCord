@@ -5,9 +5,9 @@ import com.mrbysco.disccord.network.payload.SetRecordUrlPayload;
 import com.mrbysco.disccord.registry.ModDataComponents;
 import com.mrbysco.disccord.registry.ModRegistry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -23,8 +23,7 @@ public class ServerPayloadHandler {
 
 	public void handleRecordUrl(final SetRecordUrlPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					if (context.player() != null) {
-						Player player = context.player();
+					if (context.player() instanceof ServerPlayer player) {
 						ItemStack currentItem = player.getItemInHand(player.getUsedItemHand());
 
 						if (!currentItem.is(ModRegistry.CUSTOM_RECORD.get())) {

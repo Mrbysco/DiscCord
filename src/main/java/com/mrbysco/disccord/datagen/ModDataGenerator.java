@@ -20,39 +20,35 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("removal")
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ModDataGenerator {
 	@SubscribeEvent
-	public static void gatherData(GatherDataEvent event) {
+	public static void gatherData(GatherDataEvent.Client event) {
 		DataGenerator generator = event.getGenerator();
 		PackOutput packOutput = generator.getPackOutput();
-		ExistingFileHelper helper = event.getExistingFileHelper();
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
-			BlockTagsProvider blockTags = new BlockTagsProvider(packOutput, lookupProvider, DiscCordMod.MOD_ID, helper) {
-				@Override
-				protected void addTags(HolderLookup.Provider provider) {
+		generator.addProvider(true, new ModRecipeProvider.Runner(packOutput, lookupProvider));
+		BlockTagsProvider blockTags = new BlockTagsProvider(packOutput, lookupProvider, DiscCordMod.MOD_ID) {
+			@Override
+			protected void addTags(HolderLookup.Provider provider) {
 
-				}
-			};
-			generator.addProvider(event.includeServer(), blockTags);
-			generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput, lookupProvider, blockTags, helper));
-			generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
-					packOutput, CompletableFuture.supplyAsync(ModDataGenerator::getProvider), Set.of(DiscCordMod.MOD_ID)));
-		}
-		if (event.includeClient()) {
-			generator.addProvider(event.includeClient(), new ModLanguageProvider(packOutput));
-			generator.addProvider(event.includeClient(), new ModSoundProvider(packOutput, helper));
-			generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, helper));
-		}
+			}
+		};
+		generator.addProvider(true, blockTags);
+		generator.addProvider(true, new ModItemTagsProvider(packOutput, lookupProvider, blockTags));
+		generator.addProvider(true, new DatapackBuiltinEntriesProvider(
+				packOutput, CompletableFuture.supplyAsync(ModDataGenerator::getProvider), Set.of(DiscCordMod.MOD_ID)));
+
+		generator.addProvider(true, new ModLanguageProvider(packOutput));
+		generator.addProvider(true, new ModSoundProvider(packOutput));
+		generator.addProvider(true, new ModItemModelProvider(packOutput));
 	}
 
 	private static RegistrySetBuilder.PatchedRegistries getProvider() {

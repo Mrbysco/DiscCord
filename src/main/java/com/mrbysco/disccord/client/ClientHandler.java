@@ -37,11 +37,11 @@ public class ClientHandler {
 
 		AudioHandlerClient audioHandler = new AudioHandlerClient();
 
-		if (!audioHandler.checkForAudioFile(fileUrl)) {
-			mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading"));
+		if (!audioHandler.checkForAudioFile(fileUrl) && mc.player != null) {
+			mc.player.displayClientMessage(Component.translatable("disccord.song.downloading"), false);
 
 			audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
-				mc.player.sendSystemMessage(Component.translatable("disccord.song.succeed"));
+				mc.player.displayClientMessage(Component.translatable("disccord.song.succeed"), false);
 
 				FileSound fileSound = new FileSound();
 				fileSound.position = centerPos;

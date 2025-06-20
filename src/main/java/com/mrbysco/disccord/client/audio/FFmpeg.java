@@ -92,7 +92,8 @@ public class FFmpeg {
 					DiscCordMod.LOGGER.error("Failed to delete the {} file", zipFile.getName());
 			} else {
 				if (mc.player != null) {
-					mc.player.sendSystemMessage(Component.translatable("disccord.ffmpeg.missing").withStyle(ChatFormatting.RED));
+					mc.player.displayClientMessage(
+							Component.translatable("disccord.ffmpeg.missing").withStyle(ChatFormatting.RED), false);
 				}
 				for (String message : getMissingMessage()) {
 					DiscCordMod.LOGGER.error(message);
@@ -103,7 +104,8 @@ public class FFmpeg {
 				ffmpegPath = ffmpegFile.getAbsolutePath();
 			} else {
 				if (mc.player != null) {
-					mc.player.sendSystemMessage(Component.translatable("disccord.executable.permission", ffmpegFile.getName()).withStyle(ChatFormatting.RED));
+					mc.player.displayClientMessage(
+							Component.translatable("disccord.executable.permission", ffmpegFile.getName()).withStyle(ChatFormatting.RED), false);
 				}
 				DiscCordMod.LOGGER.error("The '{}' executable isn't executeable, please make sure to add the executeable permission with chmod +x", ffmpegFile.getName());
 			}
