@@ -11,9 +11,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class DiscCordItem extends Item {
 	public DiscCordItem(Properties properties) {
@@ -31,13 +32,12 @@ public class DiscCordItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context,
-	                            List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 		String currentURL = stack.getOrDefault(ModDataComponents.MUSIC_URL, "");
-		if (!currentURL.isEmpty() && tooltipFlag.isAdvanced()) {
+		if (!currentURL.isEmpty() && flag.isAdvanced()) {
 			Component urlComponent = Component.literal(currentURL).withStyle(ChatFormatting.BLUE);
-			tooltipComponents.add(Component.translatable("item.disccord.custom_record.tooltip", urlComponent).withStyle(ChatFormatting.GRAY));
+			tooltipAdder.accept(Component.translatable("item.disccord.custom_record.tooltip", urlComponent).withStyle(ChatFormatting.GRAY));
 		}
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 }

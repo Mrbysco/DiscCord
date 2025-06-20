@@ -96,9 +96,9 @@ dependencies {
 
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
-    compileOnly "curse.maven:sophisticated-core-618298:${sophisticated_core}"
-    localRuntime "curse.maven:sophisticated-core-618298:${sophisticated_core}"
-    localRuntime "curse.maven:sophisticated-backpacks-422301:${sophisticated_backpacks}"
+//    compileOnly "curse.maven:sophisticated-core-618298:${sophisticated_core}"
+//    localRuntime "curse.maven:sophisticated-core-618298:${sophisticated_core}"
+//    localRuntime "curse.maven:sophisticated-backpacks-422301:${sophisticated_backpacks}"
 }
 
 jar {
