@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -40,11 +41,13 @@ public class ModRecipeProvider extends RecipeProvider {
 			super(output, completableFuture);
 		}
 
+		@NotNull
 		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+		protected RecipeProvider createRecipeProvider(@NotNull HolderLookup.Provider provider, @NotNull RecipeOutput recipeOutput) {
 			return new ModRecipeProvider(provider, recipeOutput);
 		}
 
+		@NotNull
 		@Override
 		public String getName() {
 			return "DiscCord Recipes";

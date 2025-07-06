@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -21,8 +22,9 @@ public class DiscCordItem extends Item {
 		super(properties);
 	}
 
+	@NotNull
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stackInHand = player.getItemInHand(hand);
 		if (player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.connection.send(new OpenMusicDiscScreenPayload(stackInHand));
@@ -31,8 +33,12 @@ public class DiscCordItem extends Item {
 		return InteractionResult.PASS;
 	}
 
+
+	@SuppressWarnings("deprecation")
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+	                            @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder,
+	                            @NotNull TooltipFlag flag) {
 		super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 		String currentURL = stack.getOrDefault(ModDataComponents.MUSIC_URL, "");
 		if (!currentURL.isEmpty() && flag.isAdvanced()) {

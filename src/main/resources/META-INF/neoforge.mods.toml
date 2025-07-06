@@ -15,13 +15,13 @@ A mod that allows you to write music URLs on a Custom Record to play in a Jukebo
 [[dependencies.disccord]]
 modId="minecraft"
 type="REQUIRED"
-versionRange="[1.21.5,1.21.6)"
+versionRange="[1.21.6,1.21.7)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.disccord]]
 modId="neoforge"
 type="required"
-versionRange="[21.5.0,)"
+versionRange="[21.6.0,)"
 ordering="NONE"
 side="BOTH"
 #[[dependencies.disccord]]

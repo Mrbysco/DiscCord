@@ -18,7 +18,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -26,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("removal")
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class ModDataGenerator {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent.Client event) {
@@ -35,14 +34,7 @@ public class ModDataGenerator {
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
 		generator.addProvider(true, new ModRecipeProvider.Runner(packOutput, lookupProvider));
-		BlockTagsProvider blockTags = new BlockTagsProvider(packOutput, lookupProvider, DiscCordMod.MOD_ID) {
-			@Override
-			protected void addTags(HolderLookup.Provider provider) {
-
-			}
-		};
-		generator.addProvider(true, blockTags);
-		generator.addProvider(true, new ModItemTagsProvider(packOutput, lookupProvider, blockTags));
+		generator.addProvider(true, new ModItemTagsProvider(packOutput, lookupProvider));
 		generator.addProvider(true, new DatapackBuiltinEntriesProvider(
 				packOutput, CompletableFuture.supplyAsync(ModDataGenerator::getProvider), Set.of(DiscCordMod.MOD_ID)));
 
