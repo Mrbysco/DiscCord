@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(JukeboxBlockEntity.class)
 public class JukeboxBlockEntityMixin {
@@ -23,6 +24,17 @@ public class JukeboxBlockEntityMixin {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
 		if (!jukebox.getLevel().isClientSide) {
+			jukebox.getLevel().players().forEach(player -> {
+				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayRecordMessage(jukebox.getBlockPos(), ""));
+			});
+		}
+	}
+
+	@Inject(at = @At("TAIL"), method = "removeItem(II)Lnet/minecraft/world/item/ItemStack;")
+	public void disccord$removeItem(int slot, int amount, CallbackInfoReturnable<ItemStack> cir) {
+		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
+
+		if (!jukebox.getLevel().isClientSide && jukebox.getFirstItem().isEmpty()) {
 			jukebox.getLevel().players().forEach(player -> {
 				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayRecordMessage(jukebox.getBlockPos(), ""));
 			});
