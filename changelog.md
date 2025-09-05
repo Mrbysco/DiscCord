@@ -1,1 +1,1 @@
-* Backport Sophisticated Backpacks support
+* Fix Hopper Minecarts not stopping the music from playing
