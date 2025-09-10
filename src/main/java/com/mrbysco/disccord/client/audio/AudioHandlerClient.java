@@ -49,6 +49,7 @@ public class AudioHandlerClient {
 				inPath = YoutubeDL.executeYoutubeDLCommand(String.format("-S res:144 -o \"%s\" \"%s\" --print after_move:filepath", audioIn, urlName));
 			} catch (IOException | InterruptedException e) {
 				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
+				DiscCordMod.LOGGER.error("Failed to download music", e);
 				throw new RuntimeException(e);
 			}
 
@@ -56,6 +57,7 @@ public class AudioHandlerClient {
 				FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", inPath, audioOut.getAbsolutePath()));
 			} catch (IOException | InterruptedException e) {
 				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
+				DiscCordMod.LOGGER.error("Failed to transcode music", e);
 				throw new RuntimeException(e);
 			}
 
