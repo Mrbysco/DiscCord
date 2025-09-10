@@ -16,6 +16,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -118,19 +121,22 @@ public class FFmpeg {
 	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
-	static void executeFFmpegCommand(String arguments) throws IOException, InterruptedException {
+	static void executeFFmpegCommand(String... arguments) throws IOException, InterruptedException {
 		if (ffmpegPath == null || !new File(ffmpegPath).canExecute()) {
 			checkForExecutable();
 		}
 
-		String cmd = ffmpegPath + " " + arguments;
-		DiscCordMod.LOGGER.debug("Executing '{}'", cmd);
+		List<String> cmdList = new ArrayList<>();
+		cmdList.add(ffmpegPath);
+		Collections.addAll(cmdList, arguments);
+		DiscCordMod.LOGGER.debug("Executing '{}'", String.join(" ", cmdList));
 		Process resultProcess;
 		if (SystemUtils.IS_OS_LINUX) {
+			String cmd = String.join(" ", cmdList);
 			String[] cmds = {"/bin/sh", "-c", cmd};
 			resultProcess = Runtime.getRuntime().exec(cmds);
 		} else {
-			resultProcess = Runtime.getRuntime().exec(cmd);
+			resultProcess = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
 		}
 
 		int result = resultProcess.waitFor();

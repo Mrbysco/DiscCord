@@ -18,6 +18,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,6 +31,7 @@ public class YoutubeDL {
 
 	/**
 	 * Checks if the 'yt-dlp' executable is in the path, if not it will download it if the user has enabled the option
+	 *
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
@@ -93,23 +97,29 @@ public class YoutubeDL {
 
 	/**
 	 * Executes a command using the 'yt-dlp' executable
+	 *
 	 * @param arguments The arguments to pass to the 'yt-dlp' executable
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
-	static String executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
-		if (youtubedlPath == null || ! new File(youtubedlPath).canExecute()) {
+	static String executeYoutubeDLCommand(String... arguments) throws IOException, InterruptedException {
+		if (youtubedlPath == null || !new File(youtubedlPath).canExecute()) {
 			checkForExecutable();
 		}
 
-		String cmd = youtubedlPath + " " + arguments;
-		DiscCordMod.LOGGER.debug("Executing '{}'", cmd);
+		List<String> cmdList = new ArrayList<>();
+		cmdList.add(youtubedlPath);
+		Collections.addAll(cmdList, arguments);
+
+//		String cmd = youtubedlPath + " " + arguments;
+		DiscCordMod.LOGGER.debug("Executing '{}'", String.join(" ", cmdList));
 		Process resultProcess;
 		if (SystemUtils.IS_OS_LINUX) {
-			String[] cmds = { "/bin/sh", "-c", cmd };
+			String cmd = String.join(" ", cmdList);
+			String[] cmds = {"/bin/sh", "-c", cmd};
 			resultProcess = Runtime.getRuntime().exec(cmds);
 		} else {
-			resultProcess = Runtime.getRuntime().exec(cmd);
+			resultProcess = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
 		}
 
 		BufferedReader stdInput = new BufferedReader(new
@@ -123,6 +133,13 @@ public class YoutubeDL {
 
 		int result = resultProcess.waitFor();
 		if (result != 0) {
+			// Read and log stderr
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(resultProcess.getErrorStream()));
+			StringBuilder errorOutput = new StringBuilder();
+			while ((s = stdError.readLine()) != null) {
+				errorOutput.append(s).append("\n");
+			}
+			DiscCordMod.LOGGER.error("yt-dlp error output: {}", errorOutput.toString());
 			throw new IOException("Process exited with error code " + result);
 		}
 		return output;
