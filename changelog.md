@@ -1,1 +1,2 @@
-* Update Sophisticated Core support again (now requires supports 1.3.20 and newer)
+* Update the YTDLP and FFmpeg code to better handle spaces in file paths
+* Add better error logging for YTDLP and FFmpeg processes
