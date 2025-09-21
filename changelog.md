@@ -1,2 +1,1 @@
-* Update the YTDLP and FFmpeg code to better handle spaces in file paths
-* Add better error logging for YTDLP and FFmpeg processes
+* Adjust Sophisticated Backpacks support. The audio played from the backpack should now follow the player around
