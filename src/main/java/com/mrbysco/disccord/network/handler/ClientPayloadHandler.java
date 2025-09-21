@@ -42,7 +42,8 @@ public class ClientPayloadHandler {
 						Vec3 centerPos = data.pos().getCenter();
 						String fileUrl = data.url();
 						UUID uuid = data.uuid();
-						com.mrbysco.disccord.client.ClientHandler.playRecord(centerPos, fileUrl, uuid);
+						int entityId = data.entityId();
+						com.mrbysco.disccord.client.ClientHandler.playRecord(centerPos, fileUrl, uuid, entityId);
 					}
 				})
 				.exceptionally(e -> {

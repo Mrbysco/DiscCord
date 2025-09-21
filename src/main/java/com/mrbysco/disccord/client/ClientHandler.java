@@ -1,10 +1,13 @@
 package com.mrbysco.disccord.client;
 
 import com.mrbysco.disccord.client.audio.AudioHandlerClient;
+import com.mrbysco.disccord.client.audio.EntityBoundFileSound;
 import com.mrbysco.disccord.client.audio.FileSound;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +19,22 @@ public class ClientHandler {
 	public static final Map<Vec3, FileSound> playingSounds = new HashMap<>();
 	public static final Map<UUID, FileSound> playingSoundsByUUID = new HashMap<>();
 
-	public static void playRecord(Vec3 centerPos, String fileUrl, @NotNull UUID uuid) {
+	public static void playRecord(Vec3 centerPos, String fileUrl, @NotNull UUID uuid, int entityId) {
 		Minecraft mc = Minecraft.getInstance();
+		ClientLevel level = mc.level;
+		if (level == null || mc.player == null) {
+			return;
+		}
+
+		Entity entity;
+		boolean isEntityBound;
+		if (entityId >= 0) {
+			entity = level.getEntity(entityId);
+			isEntityBound = entity != null;
+		} else {
+			entity = null;
+			isEntityBound = false;
+		}
 
 		FileSound currentSound = !uuid.equals(Util.NIL_UUID) ?
 				ClientHandler.playingSoundsByUUID.get(uuid) :
@@ -43,9 +60,12 @@ public class ClientHandler {
 			audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
 				mc.player.sendSystemMessage(Component.translatable("disccord.song.succeed"));
 
-				FileSound fileSound = new FileSound();
-				fileSound.position = centerPos;
-				fileSound.fileUrl = fileUrl;
+				FileSound fileSound;
+				if (isEntityBound) {
+					fileSound = new EntityBoundFileSound(fileUrl, entity);
+				} else {
+					fileSound = new FileSound(fileUrl, centerPos);
+				}
 
 				if (!uuid.equals(Util.NIL_UUID))
 					ClientHandler.playingSoundsByUUID.put(uuid, fileSound);
@@ -59,9 +79,12 @@ public class ClientHandler {
 			return;
 		}
 
-		FileSound fileSound = new FileSound();
-		fileSound.position = centerPos;
-		fileSound.fileUrl = fileUrl;
+		FileSound fileSound;
+		if (isEntityBound) {
+			fileSound = new EntityBoundFileSound(fileUrl, entity);
+		} else {
+			fileSound = new FileSound(fileUrl, centerPos);
+		}
 
 		if (!uuid.equals(Util.NIL_UUID))
 			ClientHandler.playingSoundsByUUID.put(uuid, fileSound);

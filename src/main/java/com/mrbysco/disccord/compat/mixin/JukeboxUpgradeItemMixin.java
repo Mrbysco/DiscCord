@@ -63,7 +63,7 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 			this.storageWrapper.getContentsUuid().ifPresent((storageUuid) -> {
 				PacketDistributor.sendToPlayersNear(serverLevel, (ServerPlayer) null,
 						entity.getX(), entity.getY(), entity.getZ(), 128.0,
-						new PlayRecordPayload(entity.blockPosition(), "", storageUuid));
+						new PlayRecordPayload(entity.blockPosition(), "", storageUuid, entity.getId()));
 				this.setIsPlaying(false);
 			});
 			this.setIsPlaying(false);
@@ -89,11 +89,11 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 						if (this.entityPlaying != null) {
 							PacketDistributor.sendToPlayersNear(serverLevel, (ServerPlayer) null,
 									this.entityPlaying.getX(), this.entityPlaying.getY(), this.entityPlaying.getZ(), 128.0,
-									new PlayRecordPayload(this.entityPlaying.blockPosition(), musicUrl, storageUuid));
+									new PlayRecordPayload(this.entityPlaying.blockPosition(), musicUrl, storageUuid, entityPlaying.getId()));
 						} else {
 							PacketDistributor.sendToPlayersNear(serverLevel, (ServerPlayer) null,
 									this.posPlaying.getX(), this.posPlaying.getY(), this.posPlaying.getZ(), 128.0,
-									new PlayRecordPayload(this.posPlaying, musicUrl, storageUuid));
+									new PlayRecordPayload(this.posPlaying, musicUrl, storageUuid, entityPlaying.getId()));
 						}
 
 						this.upgrade.set(ModCoreDataComponents.DISC_FINISH_TIME, level.getGameTime() + (long)((JukeboxSong)song.value()).lengthInTicks());
