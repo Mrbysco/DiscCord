@@ -58,7 +58,7 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 			this.storageWrapper.getContentsUuid().ifPresent((storageUuid) -> {
 				PacketHandler.sendToAllNear(serverLevel.dimension(),
 						entity.position(), 128,
-						new PlayRecordMessage(entity.blockPosition(), "", storageUuid));
+						new PlayRecordMessage(entity.blockPosition(), "", storageUuid, entity.getId()));
 				this.setIsPlaying(false);
 				NBTHelper.removeTag(this.upgrade, "discFinishTime");
 				NBTHelper.removeTag(this.upgrade, "discLength");
@@ -83,10 +83,10 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 						String musicUrl = disccord$getUrl(getDisc());
 						if (this.entityPlaying != null) {
 							PacketHandler.sendToAllNear(serverLevel.dimension(), this.entityPlaying.position(), 128,
-									new PlayRecordMessage(this.entityPlaying.blockPosition(), musicUrl, storageUuid));
+									new PlayRecordMessage(this.entityPlaying.blockPosition(), musicUrl, storageUuid, entityPlaying.getId()));
 						} else {
 							PacketHandler.sendToAllNear(serverLevel.dimension(), this.posPlaying.getCenter(), 128,
-									new PlayRecordMessage(this.posPlaying, musicUrl, storageUuid));
+									new PlayRecordMessage(this.posPlaying, musicUrl, storageUuid, entityPlaying.getId()));
 						}
 
 						Item item = this.getDisc().getItem();
