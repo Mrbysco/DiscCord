@@ -17,8 +17,17 @@ import java.util.Locale;
  * Custom Sound Instance for playing custom sounds
  */
 public class FileSound implements SoundInstance {
-	public String fileUrl;
-	public Vec3 position;
+	private String fileUrl;
+	protected double x;
+	protected double y;
+	protected double z;
+
+	public FileSound(String fileUrl, Vec3 position) {
+		this.fileUrl = fileUrl;
+		this.x = position.x;
+		this.y = position.y;
+		this.z = position.z;
+	}
 
 	@Override
 	public ResourceLocation getLocation() {
@@ -69,17 +78,17 @@ public class FileSound implements SoundInstance {
 
 	@Override
 	public double getX() {
-		return position.x;
+		return x;
 	}
 
 	@Override
 	public double getY() {
-		return position.y;
+		return y;
 	}
 
 	@Override
 	public double getZ() {
-		return position.z;
+		return z;
 	}
 
 	@Override
