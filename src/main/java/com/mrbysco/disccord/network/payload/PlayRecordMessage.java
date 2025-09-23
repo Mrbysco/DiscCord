@@ -18,6 +18,7 @@ public record PlayRecordMessage(BlockPos pos, String url, UUID uuid, int entityI
 		buf.writeBlockPos(pos);
 		buf.writeUtf(url);
 		buf.writeUUID(uuid);
+		buf.writeInt(entityId);
 	}
 
 	public static PlayRecordMessage decode(final FriendlyByteBuf packetBuffer) {
