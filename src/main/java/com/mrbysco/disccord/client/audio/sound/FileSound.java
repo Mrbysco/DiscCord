@@ -1,4 +1,4 @@
-package com.mrbysco.disccord.client.audio;
+package com.mrbysco.disccord.client.audio.sound;
 
 import com.mrbysco.disccord.DiscCordMod;
 import net.minecraft.client.resources.sounds.Sound;

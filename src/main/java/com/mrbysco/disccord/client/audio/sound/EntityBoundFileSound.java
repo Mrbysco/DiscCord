@@ -1,4 +1,4 @@
-package com.mrbysco.disccord.client.audio;
+package com.mrbysco.disccord.client.audio.sound;
 
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.world.entity.Entity;
