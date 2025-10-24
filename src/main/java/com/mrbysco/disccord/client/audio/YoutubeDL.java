@@ -108,7 +108,7 @@ public class YoutubeDL {
 		}
 
 		List<String> cmdList = new ArrayList<>();
-		cmdList.add(youtubedlPath);
+		cmdList.add("\"" + youtubedlPath + "\"");
 		Collections.addAll(cmdList, arguments);
 
 //		String cmd = youtubedlPath + " " + arguments;

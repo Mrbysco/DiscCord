@@ -124,6 +124,10 @@ public class FFmpeg {
 			checkForExecutable();
 		}
 
+        if (SystemUtils.IS_OS_LINUX) {
+            ffmpegPath = "\"" + ffmpegPath + "\"";
+        }
+
 		List<String> cmdList = new ArrayList<>();
 		cmdList.add(ffmpegPath);
 		Collections.addAll(cmdList, arguments);
