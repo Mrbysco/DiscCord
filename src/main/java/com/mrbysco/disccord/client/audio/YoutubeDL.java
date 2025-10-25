@@ -107,8 +107,12 @@ public class YoutubeDL {
 			checkForExecutable();
 		}
 
+        if (SystemUtils.IS_OS_LINUX) {
+            youtubedlPath = "\"" + youtubedlPath + "\"";
+        }
+
 		List<String> cmdList = new ArrayList<>();
-		cmdList.add("\"" + youtubedlPath + "\"");
+		cmdList.add(youtubedlPath);
 		Collections.addAll(cmdList, arguments);
 
 //		String cmd = youtubedlPath + " " + arguments;
