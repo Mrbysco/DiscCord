@@ -1,1 +1,2 @@
-* Adjust Sophisticated Backpacks support. The audio played from the backpack should now follow the player around
+* Improve linux compatability (Courtesy of AltSimon)
+* Add French translation (Courtesy of AltSimon)
