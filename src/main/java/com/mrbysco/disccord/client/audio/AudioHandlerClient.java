@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.fml.loading.FMLPaths;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,18 +47,30 @@ public class AudioHandlerClient {
 			String inPath;
 
 			try {
-				inPath = YoutubeDL.executeYoutubeDLCommand(
-						"-S", "res:144",
-						"-o", audioIn,
-						urlName,
-						"--print", "after_move:filepath"
-				);
+                String escapedUrlName = urlName;
+
+                if (SystemUtils.IS_OS_LINUX) {
+                    escapedUrlName = "\"" + escapedUrlName + "\"";
+                    audioIn = "\"" + audioIn + "\"";
+                }
+
+                inPath = YoutubeDL.executeYoutubeDLCommand(
+                        "-S", "res:144",
+                        "-o", audioIn,
+                        escapedUrlName,
+                        "--print", "after_move:filepath"
+                );
 			} catch (IOException | InterruptedException e) {
 				mc.player.displayClientMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED), false);
 				throw new RuntimeException(e);
 			}
 
 			try {
+                String audioOutPath = audioOut.getAbsolutePath();
+                if (SystemUtils.IS_OS_LINUX) {
+                    inPath = "\"" + inPath + "\"";
+                    audioOutPath = "\"" + audioOutPath + "\"";
+                }
 				FFmpeg.executeFFmpegCommand(
 						"-i", inPath,
 						"-c:a", "libvorbis",
@@ -68,7 +81,7 @@ public class AudioHandlerClient {
 						"-nostdin",
 						"-nostats",
 						"-loglevel", "0",
-						audioOut.getAbsolutePath()
+						audioOutPath
 				);
 			} catch (IOException | InterruptedException e) {
 				mc.player.displayClientMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED), false);
