@@ -4,7 +4,6 @@ import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.item.DiscCordItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;

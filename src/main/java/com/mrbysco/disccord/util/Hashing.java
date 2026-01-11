@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 public class Hashing {
 	/**
 	 * This method is used to generate SHA-256 hash of the input string
+	 *
 	 * @param input String to hash
 	 * @return byte[] of the hashed string
 	 * @throws NoSuchAlgorithmException if the algorithm is not found
@@ -24,6 +25,7 @@ public class Hashing {
 
 	/**
 	 * This method converts the byte array to a hex string
+	 *
 	 * @param hash byte[] to convert
 	 * @return String of the hex value
 	 */
@@ -44,6 +46,7 @@ public class Hashing {
 
 	/**
 	 * This method is used to generate SHA-256 hash of the input string
+	 *
 	 * @param input String to hash
 	 * @return String of the hashed input
 	 */

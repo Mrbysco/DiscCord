@@ -15,8 +15,9 @@ import java.util.concurrent.CompletionException;
 public class StreamHelper {
 	/**
 	 * Get the audio stream from the given resource location
+	 *
 	 * @param resourceLocation The resource location containing the minecraftified URL of the audio file
-	 * @param isWrapper Whether the audio stream should be wrapped in a looping audio stream
+	 * @param isWrapper        Whether the audio stream should be wrapped in a looping audio stream
 	 * @return A completable future containing the audio stream
 	 */
 	public static CompletableFuture<AudioStream> getStream(Identifier resourceLocation, boolean isWrapper) {

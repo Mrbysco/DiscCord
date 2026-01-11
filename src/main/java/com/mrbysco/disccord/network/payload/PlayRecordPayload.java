@@ -3,12 +3,12 @@ package com.mrbysco.disccord.network.payload;
 import com.mrbysco.disccord.DiscCordMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -29,7 +29,6 @@ public record PlayRecordPayload(BlockPos pos, String url, UUID uuid, int entityI
 		this(pos, url, Util.NIL_UUID, -1);
 	}
 
-	@NotNull
 	public PlayRecordPayload(FriendlyByteBuf buf) {
 		this(buf.readBlockPos(), buf.readUtf(), buf.readUUID(), buf.readInt());
 	}

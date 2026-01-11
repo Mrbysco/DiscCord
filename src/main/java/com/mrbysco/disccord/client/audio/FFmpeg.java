@@ -31,6 +31,7 @@ public class FFmpeg {
 
 	/**
 	 * Checks if the 'ffmpeg' executable is in the path, if not it will download it if the user has enabled the option
+	 *
 	 * @throws IOException If an I/O error occurs
 	 */
 	static void checkForExecutable() throws IOException {
@@ -117,18 +118,19 @@ public class FFmpeg {
 
 	/**
 	 * Executes a command using the 'ffmpeg' executable
+	 *
 	 * @param arguments The arguments to pass to the 'ffmpeg' executable
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static void executeFFmpegCommand(String... arguments) throws IOException, InterruptedException {
-		if (ffmpegPath == null || ! new File(ffmpegPath).canExecute()) {
+		if (ffmpegPath == null || !new File(ffmpegPath).canExecute()) {
 			checkForExecutable();
 		}
 
-        if (SystemUtils.IS_OS_LINUX) {
-            ffmpegPath = "\"" + ffmpegPath + "\"";
-        }
+		if (SystemUtils.IS_OS_LINUX) {
+			ffmpegPath = "\"" + ffmpegPath + "\"";
+		}
 
 		List<String> cmdList = new ArrayList<>();
 		cmdList.add(ffmpegPath);

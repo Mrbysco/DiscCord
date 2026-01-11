@@ -2,7 +2,6 @@ package com.mrbysco.disccord.client.audio;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.util.Hashing;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -20,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public class AudioHandlerClient {
 	/**
 	 * Check for the audio file related to the given URL
+	 *
 	 * @param urlName The URL to check for
 	 * @return Whether the audio file exists
 	 */
@@ -33,6 +33,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Download the audio file from the given URL and convert it to OGG format
+	 *
 	 * @param urlName The URL to download the audio from
 	 * @return A CompletableFuture that will be completed when the download is finished
 	 */
@@ -47,30 +48,30 @@ public class AudioHandlerClient {
 			String inPath;
 
 			try {
-                String escapedUrlName = urlName;
+				String escapedUrlName = urlName;
 
-                if (SystemUtils.IS_OS_LINUX) {
-                    escapedUrlName = "\"" + escapedUrlName + "\"";
-                    audioIn = "\"" + audioIn + "\"";
-                }
+				if (SystemUtils.IS_OS_LINUX) {
+					escapedUrlName = "\"" + escapedUrlName + "\"";
+					audioIn = "\"" + audioIn + "\"";
+				}
 
-                inPath = YoutubeDL.executeYoutubeDLCommand(
-                        "-S", "res:144",
-                        "-o", audioIn,
-                        escapedUrlName,
-                        "--print", "after_move:filepath"
-                );
+				inPath = YoutubeDL.executeYoutubeDLCommand(
+						"-S", "res:144",
+						"-o", audioIn,
+						escapedUrlName,
+						"--print", "after_move:filepath"
+				);
 			} catch (IOException | InterruptedException e) {
 				mc.player.displayClientMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED), false);
 				throw new RuntimeException(e);
 			}
 
 			try {
-                String audioOutPath = audioOut.getAbsolutePath();
-                if (SystemUtils.IS_OS_LINUX) {
-                    inPath = "\"" + inPath + "\"";
-                    audioOutPath = "\"" + audioOutPath + "\"";
-                }
+				String audioOutPath = audioOut.getAbsolutePath();
+				if (SystemUtils.IS_OS_LINUX) {
+					inPath = "\"" + inPath + "\"";
+					audioOutPath = "\"" + audioOutPath + "\"";
+				}
 				FFmpeg.executeFFmpegCommand(
 						"-i", inPath,
 						"-c:a", "libvorbis",
@@ -96,6 +97,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get an InputStream for the audio file related to the given URL
+	 *
 	 * @param urlName The URL to get the audio file for
 	 * @return An InputStream for the audio file
 	 */
@@ -117,6 +119,7 @@ public class AudioHandlerClient {
 
 	/**
 	 * Get the minecraftified version of the URL (Replacing all resource location invalid characters with underscores)
+	 *
 	 * @param url The URL to minecraftify
 	 * @return The minecraftified URL
 	 */

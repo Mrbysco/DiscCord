@@ -34,9 +34,9 @@ public class EntityBoundFileSound extends FileSound implements TickableSoundInst
 		if (this.entity.isRemoved()) {
 			this.stop();
 		} else {
-			this.x = (double)((float)this.entity.getX());
-			this.y = (double)((float)this.entity.getY());
-			this.z = (double)((float)this.entity.getZ());
+			this.x = (double) ((float) this.entity.getX());
+			this.y = (double) ((float) this.entity.getY());
+			this.z = (double) ((float) this.entity.getZ());
 		}
 	}
 }
