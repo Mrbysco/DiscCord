@@ -1,10 +1,10 @@
 package com.mrbysco.disccord.client.audio;
 
-import net.minecraft.Util;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.client.sounds.LoopingAudioStream;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +19,7 @@ public class StreamHelper {
 	 * @param isWrapper Whether the audio stream should be wrapped in a looping audio stream
 	 * @return A completable future containing the audio stream
 	 */
-	public static CompletableFuture<AudioStream> getStream(ResourceLocation resourceLocation, boolean isWrapper) {
+	public static CompletableFuture<AudioStream> getStream(Identifier resourceLocation, boolean isWrapper) {
 		if (!resourceLocation.getNamespace().equals("disccord"))
 			return null;
 

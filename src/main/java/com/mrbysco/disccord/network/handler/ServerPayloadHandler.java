@@ -45,7 +45,7 @@ public class ServerPayloadHandler {
 						for (String url : DiscCordConfig.SERVER.whitelistedUrls.get()
 						) {
 							if (data.url().startsWith(url)) {
-								player.playNotifySound(SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.BLOCKS, 1.0f, 1.0f);
+								player.level().playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.BLOCKS, 1.0f, 1.0f, false);
 								currentItem.set(ModDataComponents.MUSIC_URL.get(), data.url());
 								return;
 							}

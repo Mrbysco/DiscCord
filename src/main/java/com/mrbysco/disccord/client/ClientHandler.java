@@ -2,9 +2,9 @@ package com.mrbysco.disccord.client;
 
 import com.mrbysco.disccord.client.audio.AudioHandlerClient;
 import com.mrbysco.disccord.client.audio.FileSound;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 

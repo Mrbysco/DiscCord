@@ -3,9 +3,9 @@ package com.mrbysco.disccord.client.audio;
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.config.DiscCordConfig;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.lang3.SystemUtils;
 

@@ -6,14 +6,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class MusicDiscScreen extends Screen {
-	private static final ResourceLocation TEXTURE = DiscCordMod.modLoc("textures/gui/record_input.png");
-	private static final ResourceLocation TEXT_FIELD_TEXTURE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
+	private static final Identifier TEXTURE = DiscCordMod.modLoc("textures/gui/record_input.png");
+	private static final Identifier TEXT_FIELD_TEXTURE = Identifier.withDefaultNamespace("container/anvil/text_field");
 	private EditBox nameField;
 
 	private final int backgroundWidth = 176;
@@ -51,8 +52,8 @@ public class MusicDiscScreen extends Screen {
 	}
 
 	@Override
-	public void resize(Minecraft minecraft, int width, int height) {
-		super.resize(minecraft, width, height);
+	public void resize(int width, int height) {
+		super.resize(width, height);
 
 		String string = this.nameField.getValue();
 		this.updateTextPosition();
@@ -60,18 +61,18 @@ public class MusicDiscScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+	public boolean keyPressed(KeyEvent keyEvent) {
+		if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE || keyEvent.key() == GLFW.GLFW_KEY_ENTER) {
 			if (!this.nameField.getValue().equals(this.inputDefaultText)) {
 				this.minecraft.getConnection().send(new SetRecordUrlPayload(this.nameField.getValue()));
 			}
 
 			this.minecraft.player.closeContainer();
 		}
-		if (this.nameField.keyPressed(keyCode, scanCode, modifiers) || this.nameField.canConsumeInput()) {
+		if (this.nameField.keyPressed(keyEvent) || this.nameField.canConsumeInput()) {
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyEvent);
 	}
 
 	private void onRenamed(String s) {
@@ -81,7 +82,7 @@ public class MusicDiscScreen extends Screen {
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 256, 256, backgroundWidth, backgroundHeight);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight, 256, 256);
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
 
 		if (this.nameField == null) {

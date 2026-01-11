@@ -5,7 +5,7 @@ import com.mrbysco.disccord.config.DiscCordConfig;
 import com.mrbysco.disccord.network.PacketHandler;
 import com.mrbysco.disccord.registry.ModDataComponents;
 import com.mrbysco.disccord.registry.ModRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -45,7 +45,7 @@ public class DiscCordMod {
 		}
 	}
 
-	public static ResourceLocation modLoc(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier modLoc(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 }

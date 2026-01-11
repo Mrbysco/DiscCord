@@ -3,7 +3,7 @@ package com.mrbysco.disccord.mixin.client;
 import com.mrbysco.disccord.client.audio.StreamHelper;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(SoundBufferLibrary.class)
 public class SoundBufferLibraryMixin {
 	@Inject(at = @At("HEAD"), method = "getStream", cancellable = true)
-	public void disccord$getStream(ResourceLocation resourceLocation, boolean isWrapper,
+	public void disccord$getStream(Identifier resourceLocation, boolean isWrapper,
 	                               CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
 		var completableAudioStream = StreamHelper.getStream(resourceLocation, isWrapper);
 		if (completableAudioStream != null) {

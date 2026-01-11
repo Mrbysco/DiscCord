@@ -1,13 +1,13 @@
 package com.mrbysco.disccord.registry;
 
 import com.mrbysco.disccord.DiscCordMod;
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.JukeboxSong;
 
 public class ModJukeboxSongs {
@@ -28,7 +28,7 @@ public class ModJukeboxSongs {
 		context.register(
 				ModJukeboxSongs.PLACEHOLDER_SONG,
 				new JukeboxSong(soundEvent,
-						Component.translatable(Util.makeDescriptionId("jukebox_song", ModJukeboxSongs.PLACEHOLDER_SONG.location())),
+						Component.translatable(Util.makeDescriptionId("jukebox_song", ModJukeboxSongs.PLACEHOLDER_SONG.identifier())),
 						(float) 1, 0)
 		);
 	}

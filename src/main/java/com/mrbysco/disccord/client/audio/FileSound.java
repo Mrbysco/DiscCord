@@ -5,7 +5,7 @@ import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.phys.Vec3;
@@ -21,7 +21,7 @@ public class FileSound implements SoundInstance {
 	public Vec3 position;
 
 	@Override
-	public ResourceLocation getLocation() {
+	public Identifier getIdentifier() {
 		return DiscCordMod.modLoc("customsound/" + fileUrl
 				.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_"));
 	}
@@ -29,12 +29,12 @@ public class FileSound implements SoundInstance {
 	@Nullable
 	@Override
 	public WeighedSoundEvents resolve(SoundManager soundManager) {
-		return new WeighedSoundEvents(getLocation(), null);
+		return new WeighedSoundEvents(getIdentifier(), null);
 	}
 
 	@Override
 	public Sound getSound() {
-		return new Sound(getLocation(), ConstantFloat.of((float) getVolume()), ConstantFloat.of((float) getPitch()), 1, Sound.Type.SOUND_EVENT, true, false, 64);
+		return new Sound(getIdentifier(), ConstantFloat.of((float) getVolume()), ConstantFloat.of((float) getPitch()), 1, Sound.Type.SOUND_EVENT, true, false, 64);
 	}
 
 	@Override

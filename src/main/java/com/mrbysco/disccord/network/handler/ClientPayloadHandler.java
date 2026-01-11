@@ -21,7 +21,7 @@ public class ClientPayloadHandler {
 
 	public void handleDiscScreen(final OpenMusicDiscScreenPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					if (FMLEnvironment.dist.isClient()) {
+					if (FMLEnvironment.getDist().isClient()) {
 						ItemStack disc = data.disc();
 
 						//Get the current URL from the disc
@@ -38,7 +38,7 @@ public class ClientPayloadHandler {
 
 	public void handleRecordPlay(final PlayRecordPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					if (FMLEnvironment.dist.isClient()) {
+					if (FMLEnvironment.getDist().isClient()) {
 						Vec3 centerPos = data.pos().getCenter();
 						String fileUrl = data.url();
 						UUID uuid = data.uuid();
