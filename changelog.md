@@ -1,2 +1,1 @@
-* Improve linux compatability (Courtesy of AltSimon)
-* Add French translation (Courtesy of AltSimon)
+* Update Sophisticated Core support to 1.4.2+
