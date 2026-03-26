@@ -23,7 +23,7 @@ public class JukeboxBlockEntityMixin {
 	public void disccord$popOutRecord(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
-		if (!jukebox.getLevel().isClientSide) {
+		if (jukebox.getLevel() != null && !jukebox.getLevel().isClientSide) {
 			jukebox.getLevel().players().forEach(player -> {
 				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayRecordMessage(jukebox.getBlockPos(), ""));
 			});
@@ -34,7 +34,7 @@ public class JukeboxBlockEntityMixin {
 	public void disccord$removeItem(int slot, int amount, CallbackInfoReturnable<ItemStack> cir) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
-		if (!jukebox.getLevel().isClientSide && jukebox.getFirstItem().isEmpty()) {
+		if (jukebox.getLevel() != null && !jukebox.getLevel().isClientSide && jukebox.getFirstItem().isEmpty()) {
 			jukebox.getLevel().players().forEach(player -> {
 				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayRecordMessage(jukebox.getBlockPos(), ""));
 			});
@@ -45,6 +45,9 @@ public class JukeboxBlockEntityMixin {
 	public void disccord$startPlaying(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 		Level level = jukebox.getLevel();
+		if (level == null) {
+			return;
+		}
 		ItemStack stack = jukebox.getFirstItem();
 		if (stack.is(ModRegistry.CUSTOM_RECORD.get()) && level instanceof ServerLevel) {
 			CompoundTag tag = stack.getTag();
