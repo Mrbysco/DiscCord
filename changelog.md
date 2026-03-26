@@ -1,1 +1,1 @@
-* Adjust Sophisticated Backpacks support. The audio played from the backpack should now follow the player around
+* Add some missing null checks to prevent crashes with other mods
