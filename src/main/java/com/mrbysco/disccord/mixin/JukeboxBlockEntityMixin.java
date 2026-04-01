@@ -23,9 +23,9 @@ public class JukeboxBlockEntityMixin {
 	public void disccord$popOutTheItem(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity) (Object) this;
 
-		if (!jukebox.getLevel().isClientSide()) {
-			jukebox.getLevel().players().forEach(player -> {
-				((ServerPlayer) player).connection.send(new PlayRecordPayload(jukebox.getBlockPos(), ""));
+		if (jukebox.getLevel() instanceof ServerLevel serverLevel) {
+			serverLevel.players().forEach(player -> {
+				player.connection.send(new PlayRecordPayload(jukebox.getBlockPos(), ""));
 			});
 		}
 	}

@@ -62,7 +62,7 @@ public class AudioHandlerClient {
 						"--print", "after_move:filepath"
 				);
 			} catch (IOException | InterruptedException e) {
-				mc.player.displayClientMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED), false);
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 
@@ -85,7 +85,7 @@ public class AudioHandlerClient {
 						audioOutPath
 				);
 			} catch (IOException | InterruptedException e) {
-				mc.player.displayClientMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED), false);
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
 			}
 

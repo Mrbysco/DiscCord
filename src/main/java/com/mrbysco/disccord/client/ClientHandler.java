@@ -55,10 +55,10 @@ public class ClientHandler {
 		AudioHandlerClient audioHandler = new AudioHandlerClient();
 
 		if (!audioHandler.checkForAudioFile(fileUrl) && mc.player != null) {
-			mc.player.displayClientMessage(Component.translatable("disccord.song.downloading"), false);
+			mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading"));
 
 			audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
-				mc.player.displayClientMessage(Component.translatable("disccord.song.succeed"), false);
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.succeed"));
 
 				FileSound fileSound;
 				if (isEntityBound) {

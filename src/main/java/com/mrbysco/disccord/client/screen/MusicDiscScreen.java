@@ -3,7 +3,7 @@ package com.mrbysco.disccord.client.screen;
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.network.payload.SetRecordUrlPayload;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -46,7 +46,7 @@ public class MusicDiscScreen extends Screen {
 		this.nameField.setMaxLength(200);
 		this.nameField.setResponder(this::onRenamed);
 		this.nameField.setValue(this.inputDefaultText);
-		this.addWidget(this.nameField);
+		this.addRenderableWidget(this.nameField);
 		this.setInitialFocus(this.nameField);
 		this.nameField.setEditable(true);
 	}
@@ -79,7 +79,7 @@ public class MusicDiscScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 		int x = (width - backgroundWidth) / 2;
 		int y = (height - backgroundHeight) / 2;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight, 256, 256);
@@ -89,6 +89,6 @@ public class MusicDiscScreen extends Screen {
 			updateTextPosition();
 		}
 
-		this.nameField.render(graphics, mouseX, mouseY, partialTick);
+		this.nameField.extractRenderState(graphics, mouseX, mouseY, partialTick);
 	}
 }

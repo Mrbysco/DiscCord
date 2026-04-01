@@ -77,8 +77,8 @@ public class YoutubeDL {
 				}
 			} else {
 				if (mc.player != null) {
-					mc.player.displayClientMessage(
-							Component.translatable("disccord.youtubedl.missing").withStyle(ChatFormatting.RED), false);
+					mc.player.sendSystemMessage(
+							Component.translatable("disccord.youtubedl.missing").withStyle(ChatFormatting.RED));
 				}
 				for (String message : getMissingMessage()) {
 					DiscCordMod.LOGGER.error(message);
@@ -89,8 +89,8 @@ public class YoutubeDL {
 				youtubedlPath = ffmpegFile.getAbsolutePath();
 			} else {
 				if (mc.player != null) {
-					mc.player.displayClientMessage(
-							Component.translatable("disccord.executable.permission", ffmpegFile.getName()).withStyle(ChatFormatting.RED), false);
+					mc.player.sendSystemMessage(
+							Component.translatable("disccord.executable.permission", ffmpegFile.getName()).withStyle(ChatFormatting.RED));
 				}
 				DiscCordMod.LOGGER.error("The '{}' executable isn't executeable, please make sure to add the executeable permission with chmod +x", ffmpegFile.getName());
 			}
