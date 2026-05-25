@@ -1,1 +1,1 @@
-* Add some missing null checks to prevent crashes with other mods
+* Backport the better Linux compatability and path quoting [#20](https://github.com/Mrbysco/DiscCord/pull/20)
