@@ -1,1 +1,1 @@
-* Backport the better Linux compatability and path quoting [#20](https://github.com/Mrbysco/DiscCord/pull/20)
+* Change ffmpeg download url to use the official github builds
