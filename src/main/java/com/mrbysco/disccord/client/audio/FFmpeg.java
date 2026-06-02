@@ -2,6 +2,7 @@ package com.mrbysco.disccord.client.audio;
 
 import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.config.DiscCordConfig;
+import com.mrbysco.disccord.util.ArchiveUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -9,7 +10,6 @@ import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * This class is responsible for checking if the 'ffmpeg' executable is in the path, if not it will download it if the user has enabled the option
@@ -31,9 +29,8 @@ public class FFmpeg {
 
 	/**
 	 * Checks if the 'ffmpeg' executable is in the path, if not it will download it if the user has enabled the option
-	 * @throws IOException If an I/O error occurs
 	 */
-	static void checkForExecutable() throws IOException {
+	static void checkForExecutable() {
 		Optional<String> pathExecutable = PathTools.traversePath("ffmpeg");
 		if (!pathExecutable.isEmpty()) {
 			ffmpegPath = pathExecutable.get().toString();
@@ -52,47 +49,61 @@ public class FFmpeg {
 		Minecraft mc = Minecraft.getInstance();
 		if (!ffmpegFile.exists()) {
 			if (DiscCordConfig.CLIENT.downloadFFmpeg.get()) {
-				File zipFile = FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile();
+				String archiveFileName;
+				String downloadUrl;
 
-				InputStream inputStream = null;
-
-				if (!FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile().exists()) {
-					if (SystemUtils.IS_OS_MAC) {
-						inputStream = new URL("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").openStream();
-					} else if (SystemUtils.IS_OS_WINDOWS) {
-						inputStream = new URL("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").openStream();
-					} else if (SystemUtils.IS_OS_LINUX) {
-						DiscCordMod.LOGGER.error("Automatic Linux ffmpeg install is not supported");
-					}
-				}
-
-				if (inputStream != null) {
-					Files.copy(inputStream, FFmpegDirectory.toPath().resolve("ffmpeg.zip"), StandardCopyOption.REPLACE_EXISTING);
+				if (SystemUtils.IS_OS_MAC) {
+					archiveFileName = "ffmpeg.zip";
+					downloadUrl = "https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip";
+				} else if (SystemUtils.IS_OS_WINDOWS) {
+					archiveFileName = "ffmpeg.zip";
+					downloadUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
+				} else if (SystemUtils.IS_OS_LINUX) {
+					archiveFileName = "ffmpeg.tar.xz";
+					downloadUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz";
 				} else {
-					DiscCordMod.LOGGER.error("Failed to download ffmpeg");
+					DiscCordMod.LOGGER.error("Unsupported operating system for automatic ffmpeg download");
 					return;
 				}
 
-				if (!zipFile.exists()) {
-					return;
-				}
+				File archiveFile = FFmpegDirectory.toPath().resolve(archiveFileName).toFile();
 
-				ZipInputStream zipInput = new ZipInputStream(new FileInputStream(zipFile));
-
-				ZipEntry zipEntry = zipInput.getNextEntry();
-
-				while (zipEntry != null) {
-					if (zipEntry.getName().endsWith("ffmpeg.exe") || zipEntry.getName().endsWith("ffmpeg")) {
-						Path outPath = FFmpegDirectory.toPath().resolve(fileName);
-						Files.copy(zipInput, outPath, StandardCopyOption.REPLACE_EXISTING);
-						ffmpegPath = outPath.toString();
-						outPath.toFile().setExecutable(true);
+				if (!archiveFile.exists()) {
+					try (InputStream inputStream = new URL(downloadUrl).openStream()) {
+						Files.copy(inputStream, archiveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						DiscCordMod.LOGGER.error("Failed to download ffmpeg", e);
+						return;
 					}
-					zipEntry = zipInput.getNextEntry();
 				}
 
-				if (!zipFile.delete())
-					DiscCordMod.LOGGER.error("Failed to delete the {} file", zipFile.getName());
+				if (!archiveFile.exists()) {
+					return;
+				}
+
+				try {
+					ArchiveUtils.extract(archiveFile.toPath(), FFmpegDirectory.toPath());
+
+					Optional<Path> foundFFmpeg = Files.walk(FFmpegDirectory.toPath())
+							.filter(Files::isRegularFile)
+							.filter(p -> p.getFileName().toString().equals(fileName))
+							.findFirst();
+
+					if (foundFFmpeg.isPresent()) {
+						ffmpegPath = foundFFmpeg.get().toAbsolutePath().toString();
+						foundFFmpeg.get().toFile().setExecutable(true);
+					} else {
+						DiscCordMod.LOGGER.error("Could not find ffmpeg binary in extracted archive");
+					}
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					DiscCordMod.LOGGER.error("Extraction interrupted", e);
+				} catch (IOException e) {
+					DiscCordMod.LOGGER.error("Failed to extract ffmpeg", e);
+				}
+
+				if (!archiveFile.delete())
+					DiscCordMod.LOGGER.error("Failed to delete the {} file", archiveFile.getName());
 			} else {
 				if (mc.player != null) {
 					mc.player.sendSystemMessage(Component.translatable("disccord.ffmpeg.missing").withStyle(ChatFormatting.RED));
@@ -115,18 +126,19 @@ public class FFmpeg {
 
 	/**
 	 * Executes a command using the 'ffmpeg' executable
+	 *
 	 * @param arguments The arguments to pass to the 'ffmpeg' executable
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException          If an I/O error occurs
 	 * @throws InterruptedException If the process is interrupted
 	 */
 	static void executeFFmpegCommand(String... arguments) throws IOException, InterruptedException {
-		if (ffmpegPath == null || ! new File(ffmpegPath).canExecute()) {
+		if (ffmpegPath == null || !new File(ffmpegPath).canExecute()) {
 			checkForExecutable();
 		}
 
-        if (SystemUtils.IS_OS_LINUX) {
-            ffmpegPath = "\"" + ffmpegPath + "\"";
-        }
+		if (SystemUtils.IS_OS_LINUX) {
+			ffmpegPath = "\"" + ffmpegPath + "\"";
+		}
 
 		List<String> cmdList = new ArrayList<>();
 		cmdList.add(ffmpegPath);
