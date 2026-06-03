@@ -1,1 +1,1 @@
-* Update Sophisticated Core support to 1.4.2+
+* Change ffmpeg download url to use the official github builds
