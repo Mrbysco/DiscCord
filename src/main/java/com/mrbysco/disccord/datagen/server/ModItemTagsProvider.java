@@ -18,6 +18,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	public void addTags(@NotNull HolderLookup.Provider lookupProvider) {
-		this.tag(ItemTags.CREEPER_DROP_MUSIC_DISCS).add(ModRegistry.CUSTOM_RECORD.get());
+		this.tag(ItemTags.CREEPER_DROP_MUSIC_DISCS).add(ModRegistry.CUSTOM_RECORD.getKey());
 	}
 }

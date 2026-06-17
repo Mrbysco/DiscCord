@@ -14,9 +14,9 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(SoundBufferLibrary.class)
 public class SoundBufferLibraryMixin {
 	@Inject(at = @At("HEAD"), method = "getStream", cancellable = true)
-	public void disccord$getStream(Identifier resourceLocation, boolean isWrapper,
+	public void disccord$getStream(Identifier identifier, boolean isWrapper,
 	                               CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
-		var completableAudioStream = StreamHelper.getStream(resourceLocation, isWrapper);
+		var completableAudioStream = StreamHelper.getStream(identifier, isWrapper);
 		if (completableAudioStream != null) {
 			cir.setReturnValue(completableAudioStream);
 			cir.cancel();

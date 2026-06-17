@@ -39,7 +39,7 @@ public class ClientPayloadHandler {
 	public void handleRecordPlay(final PlayRecordPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
 					if (FMLEnvironment.getDist().isClient()) {
-						Vec3 centerPos = data.pos().getCenter();
+						Vec3 centerPos = Vec3.atCenterOf(data.pos());
 						String fileUrl = data.url();
 						UUID uuid = data.uuid();
 						int entityId = data.entityId();

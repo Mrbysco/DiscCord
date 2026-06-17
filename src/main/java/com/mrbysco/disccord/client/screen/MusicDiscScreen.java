@@ -27,7 +27,7 @@ public class MusicDiscScreen extends Screen {
 	}
 
 	public static void openScreen(Component title, String inputDefaultText) {
-		Minecraft.getInstance().setScreen(new MusicDiscScreen(title, inputDefaultText));
+		Minecraft.getInstance().setScreenAndShow(new MusicDiscScreen(title, inputDefaultText));
 	}
 
 	public void updateTextPosition() {
