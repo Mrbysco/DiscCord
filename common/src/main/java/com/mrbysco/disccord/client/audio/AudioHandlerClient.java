@@ -1,0 +1,129 @@
+package com.mrbysco.disccord.client.audio;
+
+import com.mrbysco.disccord.Reference;
+import com.mrbysco.disccord.platform.Services;
+import com.mrbysco.disccord.util.Hashing;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import org.apache.commons.lang3.SystemUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+
+public class AudioHandlerClient {
+	/**
+	 * Check for the audio file related to the given URL
+	 *
+	 * @param urlName The URL to check for
+	 * @return Whether the audio file exists
+	 */
+	public boolean checkForAudioFile(String urlName) {
+		String hashedName = Hashing.Sha256(getMinecraftified(urlName));
+
+		File audio = new File(Services.PLATFORM.getConfigFolder().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
+
+		return audio.exists();
+	}
+
+	/**
+	 * Download the audio file from the given URL and convert it to OGG format
+	 *
+	 * @param urlName The URL to download the audio from
+	 * @return A CompletableFuture that will be completed when the download is finished
+	 */
+	public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) {
+		return CompletableFuture.supplyAsync(() -> {
+			Minecraft mc = Minecraft.getInstance();
+
+			String hashedName = Hashing.Sha256(getMinecraftified(urlName));
+			String audioIn = Services.PLATFORM.getConfigFolder().resolve("disccord/client_downloads/" + hashedName).toString();
+			File audioOut = new File(Services.PLATFORM.getConfigFolder().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
+
+			String inPath;
+
+			try {
+				String escapedUrlName = urlName;
+
+				if (SystemUtils.IS_OS_LINUX) {
+					escapedUrlName = "\"" + escapedUrlName + "\"";
+					audioIn = "\"" + audioIn + "\"";
+				}
+
+				inPath = YoutubeDL.executeYoutubeDLCommand(
+						"-S", "res:144",
+						"-o", audioIn,
+						escapedUrlName,
+						"--print", "after_move:filepath"
+				);
+			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
+				throw new RuntimeException(e);
+			}
+
+			try {
+				String audioOutPath = audioOut.getAbsolutePath();
+				if (SystemUtils.IS_OS_LINUX) {
+					inPath = "\"" + inPath + "\"";
+					audioOutPath = "\"" + audioOutPath + "\"";
+				}
+				FFmpeg.executeFFmpegCommand(
+						"-i", inPath,
+						"-c:a", "libvorbis",
+						"-ac", "1",
+						"-b:a", "64k",
+						"-vn",
+						"-y",
+						"-nostdin",
+						"-nostats",
+						"-loglevel", "0",
+						audioOutPath
+				);
+			} catch (IOException | InterruptedException e) {
+				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
+				throw new RuntimeException(e);
+			}
+
+			return true;
+		});
+
+
+	}
+
+	/**
+	 * Get an InputStream for the audio file related to the given URL
+	 *
+	 * @param urlName The URL to get the audio file for
+	 * @return An InputStream for the audio file
+	 */
+	public InputStream getAudioInputStream(String urlName) {
+		String hashedName = Hashing.Sha256(getMinecraftified(urlName));
+		Reference.LOGGER.debug("Getting audio stream for {} with SHA256 {}", urlName, hashedName);
+		File audio = new File(Services.PLATFORM.getConfigFolder().resolve("disccord/client_downloads/" + hashedName + ".ogg").toString());
+
+		InputStream fileStream;
+		try {
+			fileStream = new FileInputStream(audio);
+		} catch (FileNotFoundException e) {
+			Reference.LOGGER.error("Failed to load audio stream", e);
+			return null;
+		}
+
+		return fileStream;
+	}
+
+	/**
+	 * Get the minecraftified version of the URL (Replacing all resource location invalid characters with underscores)
+	 *
+	 * @param url The URL to minecraftify
+	 * @return The minecraftified URL
+	 */
+	private String getMinecraftified(String url) {
+		return url.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_");
+	}
+}

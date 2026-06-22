@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "disccord",
+  "version": "${version}",
+  "name": "DiscCord",
+  "description": "A mod that allows you to write music URLs on a Custom Record to play in a Jukebox",
+  "authors": [
+    "Mrbysco"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/disccord",
+    "sources": "https://github.com/Mrbysco/DiscCord",
+    "issues": "https://github.com/Mrbysco/DiscCord/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.mrbysco.disccord.datagen.ModDataGenerator"
+    ],
+    "main": [
+      "com.mrbysco.disccord.DiscCordMod"
+    ],
+    "client": [
+      "com.mrbysco.disccord.DiscCordClientMod"
+    ],
+    "modmenu": [
+      "com.mrbysco.disccord.config.DiscCordMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "disccord.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*",
+    "forgeconfigapiport": ">=26.2"
+  }
+}
+  

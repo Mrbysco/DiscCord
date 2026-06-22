@@ -1,0 +1,57 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'maven-publish'
+    id "net.neoforged.moddev" version "2.0.141"
+}
+
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+
+neoForge {
+    neoFormVersion = "${neoform_version}"
+    // Automatically enable AccessTransformers if the file exists
+    // While this location can be changed, it is recommended for
+    // common and neoforge to share an accesstransformer file
+    // and this location is hardcoded in FML
+    // https://github.com/neoforged/FancyModLoader/blob/a952595eaaddd571fbc53f43847680b00894e0c1/loader/src/main/java/net/neoforged/fml/loading/moddiscovery/ModFile.java#L118
+    def at = project(":forge").file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+dependencies {
+    compileOnly "net.fabricmc:sponge-mixin:${mixin_version}"
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: "${mixinextras_version}"
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: "${mixinextras_version}"
+
+    api("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api_version}")
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            groupId project.group
+            artifactId base.archivesName.get()
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        if (System.getenv().SAP_SECRET) {
+            maven {
+                url "https://maven.saps.dev/releases"
+                credentials {
+                    username = "mrbysco"
+                    password = "${System.getenv().SAP_SECRET}"
+                }
+            }
+        }
+    }
+}
