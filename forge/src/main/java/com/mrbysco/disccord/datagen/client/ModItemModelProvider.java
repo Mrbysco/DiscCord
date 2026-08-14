@@ -1,6 +1,5 @@
 package com.mrbysco.disccord.datagen.client;
 
-import com.mrbysco.disccord.DiscCordMod;
 import com.mrbysco.disccord.Reference;
 import com.mrbysco.disccord.registry.ModRegistry;
 import net.minecraft.client.data.models.BlockModelGenerators;
