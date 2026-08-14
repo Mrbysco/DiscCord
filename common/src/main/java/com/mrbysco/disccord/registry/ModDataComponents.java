@@ -2,7 +2,7 @@ package com.mrbysco.disccord.registry;
 
 import com.mojang.serialization.Codec;
 import com.mrbysco.disccord.Reference;
-import dev.chococraft.registration.RegistrationProvider;
+import com.mrbysco.disccord.registration.RegistrationProvider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;

@@ -2,8 +2,8 @@ package com.mrbysco.disccord.registry;
 
 import com.mrbysco.disccord.Reference;
 import com.mrbysco.disccord.item.DiscCordItem;
-import dev.chococraft.registration.RegistrationProvider;
-import dev.chococraft.registration.RegistryObject;
+import com.mrbysco.disccord.registration.RegistrationProvider;
+import com.mrbysco.disccord.registration.RegistryObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
