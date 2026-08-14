@@ -81,7 +81,7 @@ public abstract class JukeboxUpgradeItemMixin extends UpgradeWrapperBase<Jukebox
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "playDisc()V", remap = false)
+	@Inject(at = @At("HEAD"), method = "playDisc()V", remap = false, cancellable = true)
 	public void disccord$playDisc(CallbackInfo ci) {
 		if (getDisc().is(ModRegistry.CUSTOM_RECORD.get())) {
 			Level level = this.entityPlaying != null ? this.entityPlaying.level() : this.levelPlaying;
