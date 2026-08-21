@@ -9,9 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,25 +138,25 @@ public class FFmpeg {
 			checkForExecutable();
 		}
 
-		if (SystemUtils.IS_OS_LINUX) {
-			ffmpegPath = "\"" + ffmpegPath + "\"";
-		}
-
 		List<String> cmdList = new ArrayList<>();
-		cmdList.add(ffmpegPath);
-		Collections.addAll(cmdList, arguments);
-		Reference.LOGGER.debug("Executing '{}'", String.join(" ", cmdList));
 		Process resultProcess;
 		if (SystemUtils.IS_OS_LINUX) {
-			String cmd = String.join(" ", cmdList);
-			String[] cmds = {"/bin/sh", "-c", cmd};
-			resultProcess = Runtime.getRuntime().exec(cmds);
+			cmdList.add("/bin/sh");
+			cmdList.add("-c");
+			cmdList.add("\"" + ffmpegPath + "\" " + String.join(" ", arguments));
 		} else {
-			resultProcess = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
+			cmdList.add(ffmpegPath);
+			Collections.addAll(cmdList, arguments);
 		}
+		Reference.LOGGER.debug("Executing '{}'", String.join(" ", cmdList));
+		resultProcess = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
+		resultProcess.getOutputStream().close();
 
 		int result = resultProcess.waitFor();
 		if (result != 0) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resultProcess.getErrorStream()))) {
+				reader.lines().forEach(line -> Reference.LOGGER.error("FFmpeg: {}", line));
+			}
 			throw new IOException("Process exited with error code " + result);
 		}
 	}
