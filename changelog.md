@@ -1,2 +1,1 @@
-* Initial multi-loader build
-* Change ffmpeg download url to use the official GitHub builds
+* Update FFMPEG support (Should fix transcoding errors)
