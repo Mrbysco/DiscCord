@@ -53,12 +53,12 @@ public class AudioHandlerClient {
                     audioIn = "\"" + audioIn + "\"";
                 }
 
-                inPath = YoutubeDL.executeYoutubeDLCommand(
-                        "-S", "res:144",
-                        "-o", audioIn,
-                        escapedUrlName,
-                        "--print", "after_move:filepath"
-                );
+				inPath = YoutubeDL.executeYoutubeDLCommand(
+						"-f", "bestaudio",
+						"-o", audioIn,
+						escapedUrlName,
+						"--print", "after_move:filepath"
+				);
 			} catch (IOException | InterruptedException e) {
 				mc.player.sendSystemMessage(Component.translatable("disccord.song.downloading_failed").withStyle(ChatFormatting.RED));
 				throw new RuntimeException(e);
@@ -66,25 +66,30 @@ public class AudioHandlerClient {
 
 			try {
 				String audioOutPath = audioOut.getAbsolutePath();
-                if (SystemUtils.IS_OS_LINUX) {
-                    inPath = "\"" + inPath + "\"";
-                    audioOutPath = "\"" + audioOutPath + "\"";
-                }
+				String ffmpegInPath = inPath;
+				if (SystemUtils.IS_OS_LINUX) {
+					ffmpegInPath = "\"" + ffmpegInPath + "\"";
+					audioOutPath = "\"" + audioOutPath + "\"";
+				}
 				FFmpeg.executeFFmpegCommand(
-						"-i", inPath,
+						"-i", ffmpegInPath,
 						"-c:a", "libvorbis",
 						"-ac", "1",
 						"-b:a", "64k",
 						"-vn",
 						"-y",
-						"-nostdin",
 						"-nostats",
-						"-loglevel", "0",
+						"-v", "quiet",
 						audioOutPath
 				);
+				// Clean up source file after transcoding
+				File sourceFile = new File(inPath);
+				if (sourceFile.exists() && !sourceFile.delete()) {
+					DiscCordMod.LOGGER.warn("Failed to delete source file: {}", inPath);
+				}
 			} catch (IOException | InterruptedException e) {
 				mc.player.sendSystemMessage(Component.translatable("disccord.song.transcoding_failed").withStyle(ChatFormatting.RED));
-				throw new RuntimeException(e);
+				DiscCordMod.LOGGER.error("Transcoding failed:", e);
 			}
 
 			return true;
