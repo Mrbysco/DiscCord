@@ -1,1 +1,1 @@
-* Change ffmpeg download url to use the official github builds
+* Update FFMPEG support (Should fix transcoding errors)
